@@ -358,13 +358,17 @@ wi_close_session() {
 	WI_SESSIONNAME="$1"
 	if [ -n "$WI_SESSIONNAME" ];then
 		if [ -d "$WI_DATAFOLDER/$WI_SESSIONNAME" ];then
-			mv $WI_DATAFOLDER/$WI_SESSIONNAME $WI_DATAFOLDER/$WI_SESSIONNAME$(date +%M%l%j%y)
+			mv "$WI_DATAFOLDER/$WI_SESSIONNAME" \
+			"$WI_DATAFOLDER/$WI_SESSIONNAME$(date +%M%l%j%y)"
 		fi
 		mkdir $WI_DATAFOLDER/$WI_SESSIONNAME
 		wi_close_vim
 		wi_close_surf
 		wi_close_zathura
-		mv $(wmiir namespace)/$(wi_seltag)/path $WI_DATAFOLDER/$WI_SESSIONNAME/path
+		pathfile="$(wmiir namespace)/$wi_seltag)/path"
+		if [ -n "$pathfile" ];then
+			mv $(wmiir namespace)/$(wi_seltag)/path $WI_DATAFOLDER/$WI_SESSIONNAME/path
+		fi
 	fi
 }
 
