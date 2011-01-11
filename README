@@ -1,0 +1,12 @@
+wmii-session
+
+dep: wmii, task, vim, surfraw, tabbed, surf, zathura
+
+copy wmii-session to PATH 
+or try the sample wmiirc_local
+
+
+alias vim='vim --servername "$(wmiir cat /tag/sel/ctl | head -n 1)"'
+
+TODO:
+The events and aliases to open urls and pdfs from cli.

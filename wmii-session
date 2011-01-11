@@ -1,0 +1,51 @@
+#!/bin/dash -f
+
+. ~/.wmii/session.sh
+
+session_help() {
+echo \
+"
+
+
+usage: 
+   session srmenu		surfraw menu
+   session pdfmenu1		menu with all pdfs in the first path
+   session pdfmenu2		menu with all pdfs in the second path
+   session terminal1		open a terminal with first path
+   session terminal2		open a terminal with second path
+   session opensession		open a session
+   session closesession		close a session
+   session deletesession	delete a session
+   session opentask		open a task session
+   session closetask		save session to task
+   session addpath		add current path to a session
+   session removepath		remove a path from current tag
+   session updateelvi		update the elvi file
+   session help			print this help
+"
+}
+
+case $1 in
+	srmenu)		wi_srmenu;;
+	pdfmenu1)	wi_pdfmenu_one;;
+	pdfmenu2)	wi_pdfmenu_two;;
+	terminal1)	wi_terminal_one;;
+	terminal2)	wi_terminal_two;;
+	opensession)	wi_open_session_menu;;
+	closesession)	wi_close_session_menu;;
+	deletesession)	wi_delete_session;;
+	opentask)	wi_open_task;;
+	closetask)	wi_close_task;;
+	addpath)	wi_add_path;;
+	removepath)	wi_remove_path;;
+	updateelvi)	wi_updateelvi;;
+	help)		session_help;;
+	*)		session_help;;
+esac
+
+
+
+
+
+
+# vim:filetype=sh
