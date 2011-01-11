@@ -55,7 +55,7 @@ Key $MODKEY-Control-Return	# open term path 2
 	eval wi_termianl_two &
 Key $MODKEY-Control-p		# pdf menu path 1
 	eval wi_pdfmenu_one &
-Key $MODKEY--Shift-p	# pdf menu paht 2
+Key $MODKEY-Shift-p	# pdf menu paht 2
 	eval wi_pdfmenu_two &
 !
 }

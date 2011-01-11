@@ -1,8 +1,9 @@
 wmii-session
 
-dep: wmii, task, vim, surfraw, tabbed, surf, zathura
+deps: wmii, task, vim, surfraw, tabbed, surf, zathura
 
-copy wmii-session to PATH 
+copy session.sh to ~/.wmii
+copy wmii-session to PATH
 or try the sample wmiirc_local
 
 

@@ -8,20 +8,20 @@ echo \
 
 
 usage: 
-   session srmenu		surfraw menu
-   session pdfmenu1		menu with all pdfs in the first path
-   session pdfmenu2		menu with all pdfs in the second path
-   session terminal1		open a terminal with first path
-   session terminal2		open a terminal with second path
-   session opensession		open a session
-   session closesession		close a session
-   session deletesession	delete a session
-   session opentask		open a task session
-   session closetask		save session to task
-   session addpath		add current path to a session
-   session removepath		remove a path from current tag
-   session updateelvi		update the elvi file
-   session help			print this help
+   wmii-session srmenu		surfraw menu
+   wmii-session pdfmenu1		menu with all pdfs in the first path
+   wmii-session pdfmenu2		menu with all pdfs in the second path
+   wmii-session terminal1		open a terminal with first path
+   wmii-session terminal2		open a terminal with second path
+   wmii-session opensession		open a session
+   wmii-session closesession		close a session
+   wmii-session deletesession	delete a session
+   wmii-session opentask		open a task session
+   wmii-session closetask		save session to task
+   wmii-session addpath		add current path to a session
+   wmii-session removepath		remove a path from current tag
+   wmii-session updateelvi		update the elvi file
+   wmii-session help			print this help
 "
 }
 

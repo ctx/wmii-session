@@ -400,14 +400,14 @@ wi_delete_session() {
 wi_pdfmenu_one() {
 	path=$(cat $(wmiir namespace)/$(wi_seltag)/path | awk 'FNR == 1')
 	if [ -n "$path" ];then
-		$OPENPDF "$(find $path -name "*.pdf" | sort | $WI_MENUVERTICAL)"
+		wi_open_zathura "$(find $path -name "*.pdf" | sort | $WI_MENUVERTICAL)"
 	fi
 }
 
 wi_pdfmenu_two() {
 	path=$(cat $(wmiir namespace)/$(wi_seltag)/path | awk 'FNR == 2')
-	if [ -n "$path"];then
-		$OPENPDF "$(find $path -name "*.pdf" | sort | $WI_MENUVERTICAL)"
+	if [ -n "$path" ];then
+		wi_open_zathura "$(find $path -name "*.pdf" | sort | $WI_MENUVERTICAL)"
 	fi
 }
 
