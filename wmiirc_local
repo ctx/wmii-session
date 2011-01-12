@@ -3,13 +3,24 @@
 export WMII_TERM="urxvtc"
 
 . ~/.wmii/session.sh
-wi_updateelvi
+
 local_events () {
 	cat <<'!'
 # Events
 Event DestroyTag
 	wmiir remove "/lbar/$@"
 	rm -rf "$(wmiir namespace)/$@"
+Event OpenPDF
+	echo "$@"
+	wi_open_zathura "$@"
+Event OpenURL
+	wi_open_surf "$@"
+Event Mail
+	wi_newtag "|-mail-|"
+	urxvtc -e mutt
+Event Log
+	wi_newtag "|-log-|"
+	urxvtc -e tail -f ~/.wmii/wmiirc.log
 
 # Keys
 KeyGroup Cycle tags
@@ -45,8 +56,6 @@ Key $MODKEY-o      		# open session
 	eval wi_open_session_menu &
 
 KeyGroup additional functionality for tags
-Key $MODKEY-Control-d		# add path to tag
-	eval wi_addpath
 Key $MODKEY-Control-Shift-d	# remove path from tag
 	eval wi_removepath
 Key $MODKEY-Shift-Return	# open term path 1
@@ -60,7 +69,7 @@ Key $MODKEY-Shift-p	# pdf menu paht 2
 !
 }
 
-
+wi_updateelvi
 
 
 # vim:filetype=sh

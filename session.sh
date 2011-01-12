@@ -242,7 +242,7 @@ wi_open_zathura() {
 		sleep 0.1
 	fi
 	cid=$(grep -e "$PDFMARK$tag" "$WI_IDFILE" | cut -d " " -f 2)
-	zathura -e "$cid" "$(dirname "$@")/$(basename "$@")" &
+	zathura -e "$cid" "$@" &
 }
 
 # open zathura session
@@ -388,7 +388,7 @@ wi_close_task() {
 }
 # }}}
 
-# actions          {{{
+# other            {{{
 
 wi_delete_session() {
 	name="$(ls $WI_DATAFOLDER | $WI_MENU -p "delete session:")"
@@ -400,14 +400,20 @@ wi_delete_session() {
 wi_pdfmenu_one() {
 	path=$(cat $(wmiir namespace)/$(wi_seltag)/path | awk 'FNR == 1')
 	if [ -n "$path" ];then
-		wi_open_zathura "$(find $path -name "*.pdf" | sort | $WI_MENUVERTICAL)"
+		file="$(find $path -name "*.pdf" | sort | $WI_MENUVERTICAL)"
+		if [ -n "$file" ];then
+			wi_open_zathura "$file"
+		fi
 	fi
 }
 
 wi_pdfmenu_two() {
 	path=$(cat $(wmiir namespace)/$(wi_seltag)/path | awk 'FNR == 2')
 	if [ -n "$path" ];then
-		wi_open_zathura "$(find $path -name "*.pdf" | sort | $WI_MENUVERTICAL)"
+		file="$(find $path -name "*.pdf" | sort | $WI_MENUVERTICAL)"
+		if [ -n "$file" ];then
+			wi_open_zathura "$file"
+		fi
 	fi
 }
 

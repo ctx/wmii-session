@@ -1,13 +1,41 @@
 wmii-session
 
-deps: wmii, task, vim, surfraw, tabbed, surf, zathura
+deps
+====
+wmii, task, vim, surfraw, tabbed, surf, zathura, urxvt
 
+
+install
+=======
 copy session.sh to ~/.wmii
 copy wmii-session to PATH
 or try the sample wmiirc_local
 
 
+bashrc
+======
+
 alias vim='vim --servername "$(wmiir cat /tag/sel/ctl | head -n 1)"'
 
-TODO:
-The events and aliases to open urls and pdfs from cli.
+opdf() {
+	if [[ $@ =~ ^\/ ]]; then
+		cmd="OpenPDF $@"
+	else
+		cmd="OpenPDF $(pwd)/$@"
+	fi
+	wmiir xwrite /event "$cmd"
+}
+
+ourl() {
+	if [ -f "$@" ]; then
+		cmd="file\:\/\/$@"
+	else
+		cmd="OpenURL $@"
+	fi
+	wmiir xwrite /event "$cmd"
+}
+
+notes
+=====
+
+addpath works only from cli
