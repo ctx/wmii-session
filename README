@@ -2,40 +2,27 @@ wmii-session
 
 deps
 ====
-wmii, task, vim, surfraw, tabbed, surf, zathura, urxvt
+wmii, vim, tabbed, surf, zathura, urxvt
+task (taskwarrior.org), surfraw
 
 
 install
 =======
 copy session.sh to ~/.wmii
+copy openurl and openpdf to PATH
 copy wmii-session to PATH
 or try the sample wmiirc_local
 
-
-bashrc
-======
-
-alias vim='vim --servername "$(wmiir cat /tag/sel/ctl | head -n 1)"'
-
-opdf() {
-	if [[ $@ =~ ^\/ ]]; then
-		cmd="OpenPDF $@"
-	else
-		cmd="OpenPDF $(pwd)/$@"
-	fi
-	wmiir xwrite /event "$cmd"
-}
-
-ourl() {
-	if [ -f "$@" ]; then
-		cmd="file\:\/\/$@"
-	else
-		cmd="OpenURL $@"
-	fi
-	wmiir xwrite /event "$cmd"
-}
 
 notes
 =====
 
 addpath works only from cli
+
+alias vim='vim --servername "$(wmiir cat /tag/sel/ctl | head -n 1)"'
+
+use openpdf and openurl to open stuff from cli
+
+task and surfraw are optional,
+they add offtopic functionality
+

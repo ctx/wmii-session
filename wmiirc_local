@@ -15,12 +15,6 @@ Event OpenPDF
 	wi_open_zathura "$@"
 Event OpenURL
 	wi_open_surf "$@"
-Event Mail
-	wi_newtag "|-mail-|"
-	urxvtc -e mutt
-Event Log
-	wi_newtag "|-log-|"
-	urxvtc -e tail -f ~/.wmii/wmiirc.log
 
 # Keys
 KeyGroup Cycle tags
