@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if [[ $@ =~ ^\/ ]]; then
+	cmd="OpenPDF $@"
+else
+	cmd="OpenPDF $(pwd)/$@"
+fi
+wmiir xwrite /event "$cmd"
+

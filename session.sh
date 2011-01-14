@@ -24,6 +24,10 @@ SR_DEFAULT="google"
 
 # winids of tabbed containers
 WI_IDFILE="$(wmiir namespace)/idlist"
+if [ ! -f $WI_IDFILE ];then
+	touch $WI_IDFILE
+fi
+
 # surfraw elvis
 export WI_ELVIFILE="$(wmiir namespace)/elvilist"
 
@@ -359,7 +363,7 @@ wi_close_session() {
 	if [ -n "$WI_SESSIONNAME" ];then
 		if [ -d "$WI_DATAFOLDER/$WI_SESSIONNAME" ];then
 			mv "$WI_DATAFOLDER/$WI_SESSIONNAME" \
-			"$WI_DATAFOLDER/$WI_SESSIONNAME$(date +%M%l%j%y)"
+			"$WI_DATAFOLDER/$WI_SESSIONNAME$(date +%m%d%y-%N)"
 		fi
 		mkdir $WI_DATAFOLDER/$WI_SESSIONNAME
 		wi_close_vim
