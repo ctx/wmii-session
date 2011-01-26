@@ -9,7 +9,6 @@ local_events () {
 # Events
 Event Create Tag
 	echo "$WMII_NORMCOLORS" "$@" | wmiir create "/lbar/$@"
-	mkdir -p "$(wmiir namespace)/$@"
 Event DestroyTag
 	wmiir remove "/lbar/$@"
 	rm -rf "$(wmiir namespace)/$@"
@@ -57,7 +56,7 @@ Key $MODKEY-Control-Shift-d	# remove path from tag
 Key $MODKEY-Shift-Return	# open term path 1
 	eval wi_terminal_one &
 Key $MODKEY-Control-Return	# open term path 2
-	eval wi_termianl_two &
+	eval wi_terminal_two &
 Key $MODKEY-Control-p		# pdf menu path 1
 	eval wi_pdfmenu_one &
 Key $MODKEY-Shift-p	# pdf menu paht 2

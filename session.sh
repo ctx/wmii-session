@@ -79,7 +79,7 @@ wi_seltag() {
 
 # list all tags
 wi_listtag() {
-	wmiir ls /tag | sed 's/\/$//g;/^sel$/x;/^$/d'
+	wmiir ls /tag | sed 's,/$,,;/^sel$/d'
 }
 
 # return previous tag
@@ -104,6 +104,7 @@ wi_nexttag () {
 
 # add current path to current tag
 wi_add_path() {
+	mkdir -p $(wmiir namespace)/$(wi_seltag)
 	pwd >> $(wmiir namespace)/$(wi_seltag)/path
 }
 
@@ -325,6 +326,7 @@ wi_open_session() {
 		wi_open_surf_session
 		wi_open_zathura_session
 		if [ -f $WI_DATAFOLDER/$WI_SESSIONNAME/path ];then
+			mkdir -p $(wmiir namespace)/$(wi_seltag)
 			cp $WI_DATAFOLDER/$WI_SESSIONNAME/path $(wmiir namespace)/$(wi_seltag)/path
 		fi
 		wi_terminal_one

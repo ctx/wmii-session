@@ -10,7 +10,9 @@ install
 =======
 copy session.sh to ~/.wmii
 copy openurl, openpdf and wmii-session to PATH
-copy *.desktop to $XDG_DATA_HOME/applications
+mkdir -p $XDG_DATA_HOME/sessions
+
+and you may copy *.desktop to $XDG_DATA_HOME/applications
 
 
 config (optional)
@@ -52,5 +54,3 @@ use dmtcp for unsupported applications
 
 remove stupid noob mistakes
 
-write emails to llpp, vimprobable, etc.
-and ask them to set atoms like surf does with _SURF_URI.
