@@ -34,7 +34,7 @@ case $1 in
 	deletesession)	wi_delete_session;;
 	opentask)	wi_open_task;;
 	closetask)	wi_close_task;;
-	addpath)	wi_add_path;;
+	addpath)	mkdir -p $(wmiir namespace)/$(wi_seltag); wi_add_path;;
 	removepath)	wi_remove_path;;
 	updateelvi)	wi_updateelvi;;
 	help)		session_help;;

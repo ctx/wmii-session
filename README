@@ -9,20 +9,48 @@ task (taskwarrior.org), surfraw
 install
 =======
 copy session.sh to ~/.wmii
-copy openurl and openpdf to PATH
-copy wmii-session to PATH
+copy openurl, openpdf and wmii-session to PATH
+copy *.desktop to $XDG_DATA_HOME/applications
+
+
+config (optional)
+=================
+- in your shell rc:
+export $BROWSER='openurl'
+alias vim='vim --servername "$(wmiir cat /tag/sel/ctl | sed '1q')"'
+
+- you can set the mime types:
+xdg-mime default openurl.desktop application/xhtml_xml
+xdg-mime default openurl.desktop text/html
+xdg-mime default openurl.desktop text/xml
+xdg-mime default openpdf.desktop application/pdf
+
+or just run the commands directly
+
+
+usage
+=====
+run "wmii-session help"
 or try the sample wmiirc_local
 
 
 notes
 =====
-
-addpath works only from cli
-
-alias vim='vim --servername "$(wmiir cat /tag/sel/ctl | head -n 1)"'
-
-use openpdf and openurl to open stuff from cli
+addpath works only from cli:
+run "wmii-session addpath" to add $(pwd) to the current tag
 
 task and surfraw are optional,
 they add offtopic functionality
 
+
+todo
+====
+make it possible to add/use other applications
+
+use dmtcp for unsupported applications
+(and hope they will fix X apps)
+
+remove stupid noob mistakes
+
+write emails to llpp, vimprobable, etc.
+and ask them to set atoms like surf does with _SURF_URI.

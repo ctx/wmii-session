@@ -74,7 +74,7 @@ wi_newtag() {
 
 # list current tag
 wi_seltag() {
-	wmiir cat /tag/sel/ctl | head -n 1
+	wmiir cat /tag/sel/ctl | sed '1q'
 }
 
 # list all tags
@@ -97,14 +97,13 @@ wi_nexttag () {
 	tag=$(wi_seltag)
 	nexttag=$(wi_listtag | grep -A 1 -x $tag | grep -vx $tag)
 	if [ ! $nexttag ];then
-		nexttag="$(wi_listtag | head -n 1)"
+		nexttag="$(wi_listtag | sed '1q' )"
 	fi
 	echo $nexttag
 }
 
 # add current path to current tag
 wi_add_path() {
-	mkdir -p $(wmiir namespace)/$(wi_seltag)
 	pwd >> $(wmiir namespace)/$(wi_seltag)/path
 }
 
@@ -180,7 +179,7 @@ wi_close_vim() {
 # arg2: tag
 wi_tabbed() {
 	echo "$1$2" | tr "\n" " " >> $WI_IDFILE
-	tabbed 2>/dev/null | head -n 1 >> $WI_IDFILE
+	tabbed 2>/dev/null | sed '1q' >> $WI_IDFILE
 	sed -i "/"${1}${2}"/d" $WI_IDFILE
 }
 
@@ -251,7 +250,7 @@ wi_open_zathura() {
 
 # open zathura session
 wi_open_zathura_session() {
-	if [ -f $WI_DATAFOLDER/$WI_SESSIONNAME/surf ];then
+	if [ -f $WI_DATAFOLDER/$WI_SESSIONNAME/zathura ];then
 		IFS="
 "
 		for pdf in $(cat $WI_DATAFOLDER/$WI_SESSIONNAME/zathura)
@@ -325,7 +324,6 @@ wi_open_session() {
 		wi_open_vim_sessions
 		wi_open_surf_session
 		wi_open_zathura_session
-		mkdir $(wmiir namespace)/$(wi_seltag)
 		if [ -f $WI_DATAFOLDER/$WI_SESSIONNAME/path ];then
 			cp $WI_DATAFOLDER/$WI_SESSIONNAME/path $(wmiir namespace)/$(wi_seltag)/path
 		fi

@@ -7,11 +7,13 @@ export WMII_TERM="urxvtc"
 local_events () {
 	cat <<'!'
 # Events
+Event Create Tag
+	echo "$WMII_NORMCOLORS" "$@" | wmiir create "/lbar/$@"
+	mkdir -p "$(wmiir namespace)/$@"
 Event DestroyTag
 	wmiir remove "/lbar/$@"
 	rm -rf "$(wmiir namespace)/$@"
 Event OpenPDF
-	echo "$@"
 	wi_open_zathura "$@"
 Event OpenURL
 	wi_open_surf "$@"
@@ -51,7 +53,7 @@ Key $MODKEY-o      		# open session
 
 KeyGroup additional functionality for tags
 Key $MODKEY-Control-Shift-d	# remove path from tag
-	eval wi_removepath
+	eval wi_remove_path
 Key $MODKEY-Shift-Return	# open term path 1
 	eval wi_terminal_one &
 Key $MODKEY-Control-Return	# open term path 2

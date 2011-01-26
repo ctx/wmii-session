@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=wmii browser
+Exec=openurl
+StartupNotify=false
+Terminal=true
+Type=Application
+NoDisplay=true
+MimeType=text/html;text/xml;application/xhtml_xml;

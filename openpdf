@@ -1,9 +1,3 @@
 #!/bin/sh
 
-if [[ $@ =~ ^\/ ]]; then
-	cmd="OpenPDF $@"
-else
-	cmd="OpenPDF $(pwd)/$@"
-fi
-wmiir xwrite /event "$cmd"
-
+wmiir xwrite /event "OpenPDF $(readlink -f "$@")"
