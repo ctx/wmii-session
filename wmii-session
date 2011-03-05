@@ -1,43 +1,37 @@
 #!/bin/dash -f
 
-. ~/.wmii/session.sh
+. ~/.wmii-hg/session.sh
 
 session_help() {
 echo \
 "
 usage: 
-   wmii-session srmenu			surfraw menu
-   wmii-session pdfmenu1		menu with all pdfs in the first path
-   wmii-session pdfmenu2		menu with all pdfs in the second path
-   wmii-session terminal1		open a terminal with first path
-   wmii-session terminal2		open a terminal with second path
-   wmii-session opensession		open a session
-   wmii-session closesession		close a session
-   wmii-session deletesession		delete a session
-   wmii-session opentask		open a task session
+   wmii-session opentask		open session from a task
    wmii-session closetask		save session to task
+   wmii-session open			open a session template
+   wmii-session close			close (save) a session template
+   wmii-session projects		show project templates	
    wmii-session addpath			add current path to a session
    wmii-session removepath		remove a path from current tag
-   wmii-session updateelvi		update the elvi file
+   wmii-session terminal1		open a terminal with first path
+   wmii-session terminal2		open a terminal with second path
+   wmii-session show			infos of current tag
    wmii-session help			print this help
 "
 }
 
 case $1 in
-	srmenu)		wi_srmenu;;
-	pdfmenu1)	wi_pdfmenu_one;;
-	pdfmenu2)	wi_pdfmenu_two;;
+	opentask)	wi_task_cli_open $2;;
+	closetask)	wi_task_cli_close $2;;
+	open)		wi_session_open_menu;;
+	close)		wi_session_close_menu;;
+	projects)	wi_projects_show;;
+	addpath)	wi_add_path;;
+	removepath)	wi_remove_path;;
 	terminal1)	wi_terminal_one;;
 	terminal2)	wi_terminal_two;;
-	opensession)	wi_open_session_menu;;
-	closesession)	wi_close_session_menu;;
-	deletesession)	wi_delete_session;;
-	opentask)	wi_open_task;;
-	closetask)	wi_close_task;;
-	addpath)	mkdir -p $(wmiir namespace)/$(wi_seltag); wi_add_path;;
-	removepath)	wi_remove_path;;
-	updateelvi)	wi_updateelvi;;
 	help)		session_help;;
+	show)		wi_session_show;;
 	*)		session_help;;
 esac
 

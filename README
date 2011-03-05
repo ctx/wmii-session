@@ -1,56 +1,61 @@
 wmii-session
 
-deps
-====
-wmii, vim, tabbed, surf, zathura, urxvt
+## DEPENDENCIES 
+
+(tested with)
+
+wmii, vim, tabbed, surf, urxvt
 task (taskwarrior.org), surfraw
+vimprobable2, zathura with patches
 
 
-install
-=======
-copy session.sh to ~/.wmii
-copy openurl, openpdf and wmii-session to PATH
-mkdir -p $XDG_DATA_HOME/sessions
+## INSTALLATION
+
+copy session.sh, wmiirc_local, wmii-session, wmii-browser and wmii-pdf
+where you like, and adjust the source commands in those files.
 
 and you may copy *.desktop to $XDG_DATA_HOME/applications
 
+if you like to use vimprobable2 or zathura you have to apply the patches
 
-config (optional)
-=================
-- in your shell rc:
-export $BROWSER='openurl'
+
+## CONFIGURATION
+
+at the top of session.sh you can set some variables
+
+in your shell rc:
+
 alias vim='vim --servername "$(wmiir cat /tag/sel/ctl | sed '1q')"'
 
-- you can set the mime types:
+if you use the sample wmiirc_local, 
+you can set the mime types to use the events by default:
+
 xdg-mime default openurl.desktop application/xhtml_xml
 xdg-mime default openurl.desktop text/html
 xdg-mime default openurl.desktop text/xml
 xdg-mime default openpdf.desktop application/pdf
 
-or just run the commands directly
 
+## USAGE
 
-usage
-=====
-run "wmii-session help"
+run wmii-session wmii-browser and wmii-pdf
 or try the sample wmiirc_local
+and use openurl and openpdf to use the events
+
+you can save a session template named foo and foo.bar
+now when you open a task in project foo.bar.baz with no saved session
+the session template foo.bar will be loaded. If you open a task
+in the project foo.baz.blah the template foo will be loaded
 
 
-notes
-=====
-addpath works only from cli:
-run "wmii-session addpath" to add $(pwd) to the current tag
 
-task and surfraw are optional,
-they add offtopic functionality
+## TODO
+
+support more applications
 
 
-todo
-====
-make it possible to add/use other applications
+support other wms
 
-use dmtcp for unsupported applications
-(and hope they will fix X apps)
+use dmtcp
 
-remove stupid noob mistakes
-
+bugs

@@ -2,13 +2,11 @@
 
 export WMII_TERM="urxvtc"
 
-. ~/.wmii/session.sh
+. session.sh
 
 local_events () {
 	cat <<'!'
 # Events
-Event Create Tag
-	echo "$WMII_NORMCOLORS" "$@" | wmiir create "/lbar/$@"
 Event DestroyTag
 	wmiir remove "/lbar/$@"
 	rm -rf "$(wmiir namespace)/$@"
@@ -18,24 +16,6 @@ Event OpenURL
 	wi_open_surf "$@"
 
 # Keys
-KeyGroup Cycle tags
-Key $MODKEY-n       # Jump to next tag
-	eval wi_newtag $(wi_nexttag)
-Key $MODKEY-SHIFT-n # Jump to next tag and take selectet client with you
-	tag=$(wi_nexttag)
-	echo $tag
-	c=$(wi_selclient)
-	wmiir xwrite /client/$c/tags "$tag"
-	wi_newtag $tag
-Key $MODKEY-b       # Jump to previous tag
-	wi_newtag $(wi_prevtag)
-Key $MODKEY-SHIFT-b #Jump to previous tag and take selected client with you
-	tag=$(wi_prevtag)
-	echo $tag
-	c=$(wi_selclient)
-	wmiir xwrite /client/$c/tags "$tag"
-	wi_newtag $tag
-
 KeyGroup surfraw
 Key $MODKEY-g      # Open web
 	eval wi_srmenu &
@@ -43,12 +23,14 @@ Key $MODKEY-Shift-g		# update elvis
 	eval wi_updateeliv
 
 KeyGroup session
-Key $MODKEY-q      		# close session
-	eval wi_close_session_menu &
-Key $MODKEY-Shift-q		# delete session
-	eval wi_delete_sessoin &
-Key $MODKEY-o      		# open session
-	eval wi_open_session_menu &
+Key $MODKEY-q			# close task menu
+	eval wi_task_close
+Key $MODKEY-o			# open task menu
+	eval wi_task_open
+Key $MODKEY-Shift-q    		# close session menu
+	eval wi_session_close_menu &
+Key $MODKEY-Shift-o		# open session menu
+	eval wi_session_open_menu &
 
 KeyGroup additional functionality for tags
 Key $MODKEY-Control-Shift-d	# remove path from tag
@@ -59,7 +41,7 @@ Key $MODKEY-Control-Return	# open term path 2
 	eval wi_terminal_two &
 Key $MODKEY-Control-p		# pdf menu path 1
 	eval wi_pdfmenu_one &
-Key $MODKEY-Shift-p	# pdf menu paht 2
+Key $MODKEY-Shift-p		# pdf menu paht 2
 	eval wi_pdfmenu_two &
 !
 }

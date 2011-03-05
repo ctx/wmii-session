@@ -1,0 +1,24 @@
+ #!/bin/dash -f
+
+. ~/.wmii-hg/session.sh
+
+session_help() {
+echo \
+"
+usage: 
+   wmii-browser open			open url
+   wmii-browser srmenu			surfraw menu
+   wmii-browser updateelvi		update the elvi file
+   wmii-browser help			print this help
+"
+}
+
+case $1 in
+	open)		wi_tabbed_open_tab $WI_URL "$2";;
+	srmenu)		wi_surfraw_menu;;
+	updateelvi)	wi_update_elvi;;
+	help)		session_help;;
+	*)		session_help;;
+esac
+
+# vim:filetype=sh 

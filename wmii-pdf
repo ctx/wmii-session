@@ -1,0 +1,24 @@
+#!/bin/dash -f
+
+. ~/.wmii-hg/session.sh
+
+session_help() {
+echo \
+"
+usage: 
+   wmii-pdf open			open pdf
+   wmii-pdf menu1			menu with all pdfs in the first path
+   wmii-pdf menu2			menu with all pdfs in the second path
+   wmii-pdf help			print this help
+"
+}
+
+case $1 in
+	open)		wi_tabbed_open_tab $WI_PDF "$(readlink -f "$2")";;
+	menu1)		wi_pdfmenu_one;;
+	menu2)		wi_pdfmenu_two;;
+	help)		session_help;;
+	*)		session_help;;
+esac
+
+# vim:filetype=sh
