@@ -11,16 +11,16 @@ Event DestroyTag
 	wmiir remove "/lbar/$@"
 	rm -rf "$(wmiir namespace)/$@"
 Event OpenPDF
-	wi_open_zathura "$@"
+	wi_tabbed_open_tab $WI_PDF "$@"
 Event OpenURL
-	wi_open_surf "$@"
+	wi_tabbed_open_tab $WI_URL "$@"
 
 # Keys
 KeyGroup surfraw
 Key $MODKEY-g      # Open web
-	eval wi_srmenu &
+	eval wi_surfraw_menu &
 Key $MODKEY-Shift-g		# update elvis
-	eval wi_updateeliv
+	eval wi_update_eliv
 
 KeyGroup session
 Key $MODKEY-q			# close task menu
@@ -46,7 +46,7 @@ Key $MODKEY-Shift-p		# pdf menu paht 2
 !
 }
 
-wi_updateelvi
+wi_update_elvi &
 
 
 # vim:filetype=sh
