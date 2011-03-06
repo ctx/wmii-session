@@ -23,11 +23,26 @@ if you like to use vimprobable2 or zathura you have to apply the patches
 
 at the top of session.sh you can set some variables
 
-in your shell rc:
+# in your shell rc:
 
 alias vim='vim --servername "$(wmiir cat /tag/sel/ctl | sed '1q')"'
 
-if you use the sample wmiirc_local, 
+chromium is nearly working. change the chromium "On Startup" settings, to
+"Reopen the pages that were open last". you have to use the following
+function to open chromium.
+
+chromium() {
+	dir="$(wmiir namespace)/$(wmiir cat /tag/sel/ctl | sed '1q')/chromium"
+	if ! [ -d "$dir" ];then
+		cp -R $XDG_CONFIG_HOME/chromium $dir
+		chromium --user-data-dir="$dir" &
+		echo $! > "$dir/pid" &
+	else
+		chromium --user-data-dir="$dir" &
+	fi
+}
+
+# if you use the sample wmiirc_local, 
 you can set the mime types to use the events by default:
 
 xdg-mime default openurl.desktop application/xhtml_xml
