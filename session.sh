@@ -67,11 +67,11 @@ wi_task_menu() {
 	echo $task $(wi_task_uuid $task)
 }
 
-wi_task_menu_open() {
+wi_task_open_menu() {
 	wi_task_open $(wi_task_menu)
 }
 
-wi_task_menu_close() {
+wi_task_cloes_menu() {
 	wi_task_close $(wi_task_menu)
 }
 

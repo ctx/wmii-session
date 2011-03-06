@@ -24,9 +24,9 @@ Key $MODKEY-Shift-g		# update elvis
 
 KeyGroup session
 Key $MODKEY-q			# close task menu
-	eval wi_task_close
+	eval wi_task_close_menu &
 Key $MODKEY-o			# open task menu
-	eval wi_task_open
+	eval wi_task_open_menu &
 Key $MODKEY-Shift-q    		# close session menu
 	eval wi_session_close_menu &
 Key $MODKEY-Shift-o		# open session menu
