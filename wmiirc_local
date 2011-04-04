@@ -23,13 +23,13 @@ Key $MODKEY-Shift-g		# update elvis
 	eval wi_update_eliv
 
 KeyGroup session
-Key $MODKEY-q			# close task menu
-	eval wi_task_close_menu &
-Key $MODKEY-o			# open task menu
-	eval wi_task_open_menu &
-Key $MODKEY-Shift-q    		# close session menu
+Key $MODKEY-q			# close task
+	eval wi_task_menu_close &
+Key $MODKEY-o			# open task
+	eval wi_task_menu_open &
+Key $MODKEY-Shift-q    		# close session
 	eval wi_session_close_menu &
-Key $MODKEY-Shift-o		# open session menu
+Key $MODKEY-Shift-o		# open session
 	eval wi_session_open_menu &
 
 KeyGroup additional functionality for tags

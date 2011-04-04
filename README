@@ -42,6 +42,15 @@ chromium() {
 	fi
 }
 
+You can use a seperate shell history for every Tag/Task. 
+# per tag history
+if [ $(wmiir namespace) ];then
+	mkdir -p $(wmiir namespace)/$(wi_seltag)/
+	export HISTFILE=$(wmiir namespace)/$(wi_seltag)/history
+else
+	export HISTFILE=~/.history
+fi
+
 # if you use the sample wmiirc_local, 
 you can set the mime types to use the events by default:
 
