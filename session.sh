@@ -10,7 +10,7 @@ WI_TASKFOLDER="$WI_DATAFOLDER/task"
 WI_TEMPFOLDER="$(wmiir namespace)"
 
 # List of used applications with session support.
-# This are just the names of two functions whitch must exist:
+# This is just the name of two functions whitch must exist:
 # wi_$APP_open_session 
 # wi_$APP_close_sessions
 WI_APPLICATIONS='vim chromium'
@@ -31,12 +31,19 @@ SR_DEFAULT="google"
 
 # menu commands
 WI_MENU="wimenu"
-WI_MENUVERTICAL="dmenu -l 5"
+WI_MENUVERTICAL="dmenu -l 52 -nb #3f3f3f -nf #dcdccc -sf #3f3f3f -sb #f0dfaf \
+	-fn '-xos4-terminus-medium-*-*-*-12-*-*-*-*-*-iso8859-2'"
 
-# used for closing terminals on close session
+# used to close terminals on close session
 WI_TERMNAME="urxvt:URxvt"
 
 #}}} 
+
+# language         {{{
+ERROR_NO_SUCH_SESSION="Error: No saved session with name "
+ERROR_NO_NAME_SPECIFIED="Error: No name specified."
+ERROR_NO_SUCH_TASK="Error: Cannot find task "
+# }}}
 
 # taskwarrior      {{{
 
@@ -51,13 +58,17 @@ wi_task_cli_open() {
 	task="$1"
 	if [ -n "$1" ];then
 		wi_task_open $task $(wi_task_uuid $task)
+        else
+                echo $ERROR_NO_NAME_SPECIFIED 1>&2
 	fi
 }
 
 wi_task_cli_close() {
 	task="$1"
 	if [ -n "$1" ];then
-		wi_task_close $task $(wi_task_uuid $task)
+                wi_task_close $task $(wi_task_uuid $task)
+        else
+                echo $ERROR_NO_NAME_SPECIFIED 1>&2
 	fi
 }
 
@@ -67,11 +78,11 @@ wi_task_menu() {
 	echo $task $(wi_task_uuid $task)
 }
 
-wi_task_open_menu() {
+wi_task_menu_open() {
 	wi_task_open $(wi_task_menu)
 }
 
-wi_task_cloes_menu() {
+wi_task_menu_close() {
 	wi_task_close $(wi_task_menu)
 }
 
@@ -291,26 +302,32 @@ wi_session_open() {
 	WI_SESSIONNAME="$1"
 	if [ -n "$WI_SESSIONNAME" ];then
 		src="$WI_PROJECTFOLDER/$WI_SESSIONNAME"
-		dest="$WI_TEMPFOLDER/$(wi_seltag)"
-		mkdir -p $dest
-		for f in $(ls -1 $src);do
-			case $f in
-				path|history)
-					cp $src/$f $dest/$f
-					;;
-				tabbed*)
-					wi_tabbed_open_session \
-					$(echo $f |awk -F"-" '{print $2 " " $3}')
-					;;
-				*)
-					cmd=$(echo $f |awk -F"-" '{print $1}')
-					wi_${cmd}_open_session "$src/$f" "$dest"
-					;;
-			esac
-		done
+                if [ -d $src ];then
+                        dest="$WI_TEMPFOLDER/$(wi_seltag)"
+                        mkdir -p $dest
+                        for f in $(ls -1 $src);do
+                                case $f in
+                                        path|history)
+                                                cp $src/$f $dest/$f
+                                                ;;
+                                        tabbed*)
+                                                wi_tabbed_open_session \
+                                                        $(echo $f |awk -F"-" '{print $2 " " $3}')
+                                                ;;
+                                        *)
+                                                cmd=$(echo $f |awk -F"-" '{print $1}')
+                                                wi_${cmd}_open_session "$src/$f" "$dest"
+                                                ;;
+                                esac
+                        done
 
-		wi_terminal_one
-		wi_terminal_two
+                        wi_terminal_one
+                        wi_terminal_two
+                else
+                        echo $ERROR_NO_SUCH_SESSION $1. 1>&2
+                fi
+        else
+                echo $ERROR_NO_NAME_SPECIFIED 1>&2
 	fi
 }
 
@@ -353,6 +370,8 @@ wi_task_open() {
 		else 
 			wi_newtag "task $taskid"
 		fi
+        else
+                echo $ERROR_NO_SUCH_TASK $1. 1>&2
 	fi
 }
 
@@ -395,7 +414,8 @@ wi_session_close() {
 		done
 
 		wi_finish_closing
-
+        else
+                echo $ERROR_NO_NAME_SPECIFIED 1>&2
 	fi
 }
 
@@ -417,6 +437,8 @@ wi_task_close() {
 		fi
 		mv $WI_PROJECTFOLDER/$taskuuid $WI_TASKFOLDER/$taskuuid
 		task $task +session
+        else
+                echo $ERROR_NO_SUCH_TASK $1. 1>&2
 	fi
 }
 
