@@ -43,6 +43,7 @@ WI_TERMNAME="urxvt:URxvt"
 ERROR_NO_SUCH_SESSION="Error: No saved session with name "
 ERROR_NO_NAME_SPECIFIED="Error: No name specified."
 ERROR_NO_SUCH_TASK="Error: Cannot find task "
+ERROR_NO_SUCH_FILE="Error: Cannot find file "
 # }}}
 
 # taskwarrior      {{{
@@ -56,26 +57,26 @@ wi_task_uuid() {
 
 wi_task_cli_open() {
 	task="$1"
-	if [ -n "$1" ];then
-		wi_task_open $task $(wi_task_uuid $task)
-        else
+	if ! [ -n "$1" ];then
                 echo $ERROR_NO_NAME_SPECIFIED 1>&2
-	fi
+                return 1
+        fi
+        wi_task_open $task
 }
 
 wi_task_cli_close() {
 	task="$1"
-	if [ -n "$1" ];then
-                wi_task_close $task $(wi_task_uuid $task)
-        else
+	if ! [ -n "$1" ];then
                 echo $ERROR_NO_NAME_SPECIFIED 1>&2
-	fi
+                return 1
+        fi
+        wi_task_close $task
 }
 
 wi_task_menu() {
 	task=`task minimal | tail -n +4 | head -n -2 | $WI_MENUVERTICAL -p "$1" | \
 		awk '{print $1}'`
-	echo $task $(wi_task_uuid $task)
+	echo $task 
 }
 
 wi_task_menu_open() {
@@ -130,10 +131,10 @@ wi_nexttag () {
 # kill all terminals an go to tag one
 wi_finish_closing() {
 	terms=$(wmiir cat /tag/sel/index | grep $WI_TERMNAME | awk '{print $2}')
+	wmiir xwrite /ctl view 1
 	for term in $terms;do
 		wmiir xwrite /client/$term/ctl kill
 	done
-	exec wmiir xwrite /ctl view 1
 }
 
 # }}} 
@@ -236,11 +237,13 @@ wi_tabbed_open_session() {
 	cmd="$1"
 	name="$2"
 	file="$WI_PROJECTFOLDER/$WI_SESSIONNAME/tabbed-$cmd-$name"
-	if [ -f $file ];then
-		for url in $(cat $file);do
-			wi_tabbed_open_tab "$cmd" "$name" "$url"
-		done
-	fi
+	if ! [ -f $file ];then
+                echo $ERROR_NO_SUCH_FILE $file
+                return 1
+        fi
+        for url in $(cat $file);do
+                wi_tabbed_open_tab "$cmd" "$name" "$url"
+        done
 }
 
 #arg1: idfile
@@ -280,17 +283,18 @@ wi_update_elvi() {
 # searchmachines and bookmarks menu
 wi_surfraw_menu() {
 	search="$($WI_MENU -p "search the web:" <$WI_ELVIFILE)"
-	if [ "$search" ]; then
-		elvi=`echo $search | cut -d " " -f 1`
-		if [ "$SR_DIRECT" = "$elvi" ]; then
-			url="$(echo "$search" | sed -e "s/^"${SR_DIRECT}" //")"
-		elif [ "`grep -e "$elvi" "$WI_ELVIFILE"`" ]; then
-			url="$(sr -p $search)"
-		else
-			url="$(sr -p $SR_DEFAULT $search)"
-		fi
-		wi_tabbed_open_tab $WI_URL "$url"
-	fi
+	if ! [ "$search" ]; then
+                return 1
+        fi
+        elvi=`echo $search | cut -d " " -f 1`
+        if [ "$SR_DIRECT" = "$elvi" ]; then
+                url="$(echo "$search" | sed -e "s/^"${SR_DIRECT}" //")"
+        elif [ "`grep -e "$elvi" "$WI_ELVIFILE"`" ]; then
+                url="$(sr -p $search)"
+        else
+                url="$(sr -p $SR_DEFAULT $search)"
+        fi
+        wi_tabbed_open_tab $WI_URL "$url"
 }
 
 #  }}} 
@@ -300,79 +304,84 @@ wi_surfraw_menu() {
 # arg: session name
 wi_session_open() {
 	WI_SESSIONNAME="$1"
-	if [ -n "$WI_SESSIONNAME" ];then
-		src="$WI_PROJECTFOLDER/$WI_SESSIONNAME"
-                if [ -d $src ];then
-                        dest="$WI_TEMPFOLDER/$(wi_seltag)"
-                        mkdir -p $dest
-                        for f in $(ls -1 $src);do
-                                case $f in
-                                        path|history)
-                                                cp $src/$f $dest/$f
-                                                ;;
-                                        tabbed*)
-                                                wi_tabbed_open_session \
-                                                        $(echo $f |awk -F"-" '{print $2 " " $3}')
-                                                ;;
-                                        *)
-                                                cmd=$(echo $f |awk -F"-" '{print $1}')
-                                                wi_${cmd}_open_session "$src/$f" "$dest"
-                                                ;;
-                                esac
-                        done
-
-                        wi_terminal_one
-                        wi_terminal_two
-                else
-                        echo $ERROR_NO_SUCH_SESSION $1. 1>&2
-                fi
-        else
+	if ! [ -n "$WI_SESSIONNAME" ];then
                 echo $ERROR_NO_NAME_SPECIFIED 1>&2
-	fi
+                return 1
+        fi
+        src="$WI_PROJECTFOLDER/$WI_SESSIONNAME"
+        if ! [ -d $src ];then
+                echo $ERROR_NO_SUCH_SESSION $1. 1>&2
+                return 1
+        fi
+
+        dest="$WI_TEMPFOLDER/$(wi_seltag)"
+        mkdir -p $dest
+        for f in $(ls -1 $src);do
+                case $f in
+                        path|history)
+                                cp $src/$f $dest/$f
+                                ;;
+                        tabbed*)
+                                wi_tabbed_open_session \
+                                        $(echo $f |awk -F"-" '{print $2 " " $3}')
+                                ;;
+                        *)
+                                cmd=$(echo $f |awk -F"-" '{print $1}')
+                                wi_${cmd}_open_session "$src/$f" "$dest"
+                                ;;
+                esac
+        done
+
+        wi_terminal_one
+        wi_terminal_two
 }
 
 wi_session_open_menu() {
 	name="$(ls $WI_PROJECTFOLDER | $WI_MENU -p "open session:")"
-	if [ -n "$name" ];then
-		wi_newtag $name
-		wi_session_open $name
-	fi
+	if ! [ -n "$name" ];then
+                return 1
+        fi
+        wi_newtag $name
+        wi_session_open $name
 }
 
 
 wi_task_open() {
-	taskid="$1"
-	taskuuid="$2"
-	if [ -n "$taskid" -a -n "$taskuuid" ];then
-		if [ -d $WI_TASKFOLDER/$taskuuid ];then
-			cp -R $WI_TASKFOLDER/$taskuuid $WI_PROJECTFOLDER
-		else
-			project=$(task $taskid | grep Project | awk '{print $2}')
-			mainproject=$(echo $project | sed 's/\..*$//g')
-			while [ ".$project" != "." ];do
-				if [ -d $WI_PROJECTFOLDER/$project ]; then
-					cp -R $WI_PROJECTFOLDER/$project $WI_PROJECTFOLDER/$taskuuid
-					break
-				fi
-				if [ "$project" != "$mainproject" ];then
-					project=$(echo $project | sed 's/\.[^.]*$//g')
-				else
-					project=""
-				fi
-			done
-			
-		fi
-		if [ -d $WI_PROJECTFOLDER/$taskuuid ];then
-			wi_newtag "task $taskid"
-			wi_session_open $taskuuid
-			sleep 2
-			rm -r $WI_PROJECTFOLDER/$taskuuid
-		else 
-			wi_newtag "task $taskid"
-		fi
-        else
+	task="$1"
+	taskuuid="$(wi_task_uuid $task)"
+	if ! [ -n "$task" -a -n "$taskuuid" ];then
                 echo $ERROR_NO_SUCH_TASK $1. 1>&2
-	fi
+                return 1
+        fi
+
+        task $task start
+
+        if [ -d $WI_TASKFOLDER/$taskuuid ];then
+                cp -R $WI_TASKFOLDER/$taskuuid $WI_PROJECTFOLDER
+        else
+                project=$(task $task | grep Project | awk '{print $2}')
+                mainproject=$(echo $project | sed 's/\..*$//g')
+                while [ ".$project" != "." ];do
+                        if [ -d $WI_PROJECTFOLDER/$project ]; then
+                                cp -R $WI_PROJECTFOLDER/$project $WI_PROJECTFOLDER/$taskuuid
+                                break
+                        fi
+                        if [ "$project" != "$mainproject" ];then
+                                project=$(echo $project | sed 's/\.[^.]*$//g')
+                        else
+                                project=""
+                        fi
+                done
+
+        fi
+        if [ -d $WI_PROJECTFOLDER/$taskuuid ];then
+                wi_newtag "task $task"
+                wi_session_open $taskuuid
+                sleep 2
+                rm -r $WI_PROJECTFOLDER/$taskuuid
+        else 
+                wi_newtag "task $task"
+        fi
 }
 
 # }}}
@@ -383,63 +392,68 @@ wi_session_close() {
 	WI_SESSIONNAME="$1"
 	tag=$(wi_seltag)
 	
-	if [ -n "$WI_SESSIONNAME" ];then
-
-		src="$WI_TEMPFOLDER/$tag"
-		dest="$WI_PROJECTFOLDER/$WI_SESSIONNAME"
-
-		# backup resent session folder
-		if [ -d "$dest" ];then
-			mv "$dest" \
-			"$WI_BACKUPFOLDER/$WI_SESSIONNAME$(date +-%N-%m-%d-%y)"
-		fi
-		mkdir $dest
-		
-
-		for f in $(ls -1 $src);do
-			case $f in 
-				path|history)
-				    mv $src/$f $dest/$f
-				    ;;
-				tabbed*)
-				    wi_tabbed_close_session $src/$f
-				    ;;
-				*)
-				    echo error unhandled case
-			esac
-		done
-
-		for cmd in $WI_APPLICATIONS;do
-			wi_${cmd}_close_session "$src" "$dest"
-		done
-
-		wi_finish_closing
-        else
+	if ! [ -n "$WI_SESSIONNAME" ];then
                 echo $ERROR_NO_NAME_SPECIFIED 1>&2
-	fi
+                return 1
+        fi
+
+        src="$WI_TEMPFOLDER/$tag"
+        dest="$WI_PROJECTFOLDER/$WI_SESSIONNAME"
+
+        # backup resent session folder
+        if [ -d "$dest" ];then
+                mv "$dest" "$WI_BACKUPFOLDER/$WI_SESSIONNAME$(date +-%N-%m-%d-%y)"
+        fi
+        mkdir $dest
+
+        # backup files
+        for f in $(ls -1 $src);do
+                case $f in 
+                        path|history)
+                                mv $src/$f $dest/$f
+                                ;;
+                        tabbed*)
+                                wi_tabbed_close_session $src/$f
+                                ;;
+                        *)
+                                echo error unhandled case
+                esac
+        done
+
+        # save sessions
+        for cmd in $WI_APPLICATIONS;do
+                wi_${cmd}_close_session "$src" "$dest"
+        done
+
 }
 
 wi_session_close_menu() {
 	name="$(ls $WI_PROJECTFOLDER | $WI_MENU -p "close session:")"
 	if [ -n "$name" ];then
 		wi_session_close $name
+        wi_finish_closing
 	fi
 }
 
 wi_task_close() {
 	task="$1"
-	taskuuid="$2"
-	if [ -n "$taskuuid" ];then
-		wi_session_close $taskuuid
-		if [ -d $WI_TASKFOLDER/$taskuuid ];then
-			mv $WI_TASKFOLDER/$taskuuid \
-				$WI_BACKUPFOLDER/$taskuuid-$(date +-%N-%m-%d-%y)
-		fi
-		mv $WI_PROJECTFOLDER/$taskuuid $WI_TASKFOLDER/$taskuuid
-		task $task +session
-        else
+        taskuuid="$(wi_task_uuid $task)" 
+        if ! [ -n "$taskuuid" ];then
                 echo $ERROR_NO_SUCH_TASK $1. 1>&2
-	fi
+                return 1
+        fi
+
+        wi_session_close $taskuuid
+
+        if [ -d $WI_TASKFOLDER/$taskuuid ];then
+                mv $WI_TASKFOLDER/$taskuuid \
+                        $WI_BACKUPFOLDER/$taskuuid-$(date +-%N-%m-%d-%y)
+        fi
+
+        mv $WI_PROJECTFOLDER/$taskuuid $WI_TASKFOLDER/$taskuuid
+        task $task +session
+        task $task stop
+        wi_finish_closing
 }
 
 # }}}
@@ -460,12 +474,14 @@ wi_remove_path() {
 	fi
 }
 wi_terminal_one() {
-	if [ -f "$WI_TEMPFOLDER/$(wi_seltag)/path" ];then
-		path=$(cat $WI_TEMPFOLDER/$(wi_seltag)/path | awk 'FNR == 1')
-		if [ -n "$path" ];then
-			${WMII_TERM} -cd "$path"
-		fi
-	fi
+	if ! [ -f "$WI_TEMPFOLDER/$(wi_seltag)/path" ];then
+                # nothing to do
+                return 0
+        fi
+        path=$(cat $WI_TEMPFOLDER/$(wi_seltag)/path | awk 'FNR == 1')
+        if [ -n "$path" ];then
+                ${WMII_TERM} -cd "$path"
+        fi
 }
 
 wi_terminal_two() {
