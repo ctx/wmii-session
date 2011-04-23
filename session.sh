@@ -31,8 +31,7 @@ SR_DEFAULT="google"
 
 # menu commands
 WI_MENU="wimenu"
-WI_MENUVERTICAL="dmenu -l 52 -nb #3f3f3f -nf #dcdccc -sf #3f3f3f -sb #f0dfaf \
-	-fn '-xos4-terminus-medium-*-*-*-12-*-*-*-*-*-iso8859-2'"
+WI_MENUVERTICAL="dmenu -l 10" 
 
 # used to close terminals on close session
 WI_TERMNAME="urxvt:URxvt"
@@ -68,6 +67,8 @@ wi_task_cli_close() {
 	task="$1"
 	if ! [ -n "$1" ];then
                 echo $ERROR_NO_NAME_SPECIFIED 1>&2
+                echo Open Sessions
+                task active
                 return 1
         fi
         wi_task_close $task
@@ -241,9 +242,9 @@ wi_tabbed_open_session() {
                 echo $ERROR_NO_SUCH_FILE $file
                 return 1
         fi
-        for url in $(cat $file);do
+        while read url;do
                 wi_tabbed_open_tab "$cmd" "$name" "$url"
-        done
+        done < "$file"
 }
 
 #arg1: idfile
@@ -255,9 +256,9 @@ wi_tabbed_close_session() {
 	childs="$(xwininfo -children -id $id | \
 		tail -n +7 | cut -d " " -f 6)"
 	for child in $childs; do
-		uri=$(xprop -id $child | grep "_URI(STRING)" | \
+		uri="$(xprop -id $child | grep "_URI(STRING)" | \
 			sed 's/^.* = //
-		s/\"//g')
+		s/\"//g')"
 		xkill -id $child
 		if [ -n "$uri" ]; then
 			echo "$uri" >> \
@@ -306,20 +307,29 @@ wi_session_open() {
 	WI_SESSIONNAME="$1"
 	if ! [ -n "$WI_SESSIONNAME" ];then
                 echo $ERROR_NO_NAME_SPECIFIED 1>&2
+                wi_projects_show
                 return 1
         fi
+        
+        tag="$2"
+        if ! [ -n "$tag" ]; then
+                tag="$WI_SESSIONNAME"
+        fi
+
         src="$WI_PROJECTFOLDER/$WI_SESSIONNAME"
         if ! [ -d $src ];then
                 echo $ERROR_NO_SUCH_SESSION $1. 1>&2
                 return 1
         fi
 
-        dest="$WI_TEMPFOLDER/$(wi_seltag)"
+        wi_newtag $tag
+
+        dest="$WI_TEMPFOLDER/$tag"
         mkdir -p $dest
         for f in $(ls -1 $src);do
                 case $f in
                         path|history)
-                                cp $src/$f $dest/$f
+                                cp "$src/$f" "$dest/$f"
                                 ;;
                         tabbed*)
                                 wi_tabbed_open_session \
@@ -341,7 +351,6 @@ wi_session_open_menu() {
 	if ! [ -n "$name" ];then
                 return 1
         fi
-        wi_newtag $name
         wi_session_open $name
 }
 
@@ -375,12 +384,11 @@ wi_task_open() {
 
         fi
         if [ -d $WI_PROJECTFOLDER/$taskuuid ];then
-                wi_newtag "task $task"
-                wi_session_open $taskuuid
+                wi_session_open $taskuuid "task$task"
                 sleep 2
                 rm -r $WI_PROJECTFOLDER/$taskuuid
         else 
-                wi_newtag "task $task"
+                wi_newtag "task$task"
         fi
 }
 
@@ -388,7 +396,7 @@ wi_task_open() {
 
 # close            {{{
 
-wi_session_close() {
+wi_session_save() {
 	WI_SESSIONNAME="$1"
 	tag=$(wi_seltag)
 	
@@ -427,11 +435,19 @@ wi_session_close() {
 
 }
 
+wi_session_close() {
+        if [ wi_session_save ];then
+                wi_finish_closing
+        fi
+}
+        
+
+
 wi_session_close_menu() {
 	name="$(ls $WI_PROJECTFOLDER | $WI_MENU -p "close session:")"
 	if [ -n "$name" ];then
-		wi_session_close $name
-        wi_finish_closing
+		wi_session_save $name
+                wi_finish_closing
 	fi
 }
 
@@ -443,7 +459,7 @@ wi_task_close() {
                 return 1
         fi
 
-        wi_session_close $taskuuid
+        wi_session_save $taskuuid
 
         if [ -d $WI_TASKFOLDER/$taskuuid ];then
                 mv $WI_TASKFOLDER/$taskuuid \
@@ -473,6 +489,7 @@ wi_remove_path() {
 		sed -i "\|^${path}$|d" $WI_TEMPFOLDER/$(wi_seltag)/path
 	fi
 }
+
 wi_terminal_one() {
 	if ! [ -f "$WI_TEMPFOLDER/$(wi_seltag)/path" ];then
                 # nothing to do
@@ -521,7 +538,7 @@ wi_session_show() {
 	folder="$WI_TEMPFOLDER/$(wi_seltag)"
 	for f in $(ls -1 $folder); do
 		echo "$f"
-		cat "$folder/$f"
+		tail "$folder/$f"
 		echo 
 	done
 }
