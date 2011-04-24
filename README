@@ -4,7 +4,7 @@ wmii-session
 
 (tested with)
 
-wmii, vim, tabbed, surf, urxvt
+wmii, vim (gvim in Arch), tabbed, surf, urxvt
 task (taskwarrior.org), surfraw
 vimprobable2, zathura with patches
 

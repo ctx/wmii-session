@@ -1,8 +1,8 @@
 #!/bin/dash -f
 
-export WMII_TERM="urxvtc"
+export WMII_TERM="urxvt"
 
-. session.sh
+. ~/.wmii-hg/session.sh
 
 local_events () {
 	cat <<'!'

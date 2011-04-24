@@ -278,7 +278,9 @@ wi_tabbed_close_session() {
 wi_update_elvi() {
 	sr -elvi | grep -v -e "GLOBAL" -e "LOCAL" -e "Activate Surfraw defined" | \
 		cut -f 1 >$WI_ELVIFILE
-	cat $WI_BOOKMARKS | cut -f 1 | sort >> $WI_ELVIFILE
+        if [ -f $WI_BOOKMARKS ];then
+        	cat $WI_BOOKMARKS | cut -f 1 | sort >> $WI_ELVIFILE
+        fi
 }
 
 # searchmachines and bookmarks menu
