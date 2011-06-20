@@ -10,7 +10,7 @@ WI_TASKFOLDER="$WI_DATAFOLDER/task"
 WI_TEMPFOLDER="$(wmiir namespace)"
 
 # List of used applications with session support.
-# This is just the name of two functions whitch must exist:
+# This is the name of two functions whitch must exist:
 # wi_$APP_open_session 
 # wi_$APP_close_sessions
 WI_APPLICATIONS='vim chromium'
@@ -43,14 +43,13 @@ ERROR_NO_SUCH_SESSION="Error: No saved session with name "
 ERROR_NO_NAME_SPECIFIED="Error: No name specified."
 ERROR_NO_SUCH_TASK="Error: Cannot find task "
 ERROR_NO_SUCH_FILE="Error: Cannot find file "
+ERROR_MISSING_URI_SUPPORT="Error: This application has no ATOM calld _URI(STRING): "
 # }}}
 
 # taskwarrior      {{{
 
 wi_task_uuid() {
-	task $1 | grep UUID \
-		| sed 's/UUID//
-		       s/ //g'
+	task info $1 | awk '/UUID/{print $2}'
 }
 
 
@@ -75,9 +74,8 @@ wi_task_cli_close() {
 }
 
 wi_task_menu() {
-	task=`task minimal | tail -n +4 | head -n -2 | $WI_MENUVERTICAL -p "$1" | \
-		awk '{print $1}'`
-	echo $task 
+	task minimal | tail -n +4 | head -n -2 | \
+		$WI_MENUVERTICAL -p "$1" | cut -f1 -d\ 
 }
 
 wi_task_menu_open() {
@@ -102,36 +100,9 @@ wi_seltag() {
 	wmiir cat /tag/sel/ctl | sed '1q'
 }
 
-# list all tags
-wi_listtag() {
-	wmiir ls /tag | sed 's,/$,,;/^sel$/d'
-}
-
-# return previous tag
-wi_prevtag () {
-	tag="$(wi_seltag)"
-	prevtag="$(wi_listtag | grep -B 1 -x $tag | grep -vx $tag)"
-	if [ ! $prevtag ];then
-		prevtag="$(wi_listtag | tail -n 1)"
-	fi
-	echo $prevtag
-}
-
-# return next tag
-wi_nexttag () {
-	tag=$(wi_seltag)
-	nexttag=$(wi_listtag | grep -A 1 -x $tag | grep -vx $tag)
-	if [ ! $nexttag ];then
-		nexttag="$(wi_listtag | sed '1q' )"
-	fi
-	echo $nexttag
-}
-
-
-
 # kill all terminals an go to tag one
 wi_finish_closing() {
-	terms=$(wmiir cat /tag/sel/index | grep $WI_TERMNAME | awk '{print $2}')
+	terms=$(wmiir cat /tag/sel/index | grep $WI_TERMNAME | cut -f2 -d\ )
 	wmiir xwrite /ctl view 1
 	for term in $terms;do
 		wmiir xwrite /client/$term/ctl kill
@@ -258,13 +229,13 @@ wi_tabbed_close_session() {
 	for child in $childs; do
 		uri="$(xprop -id $child | grep "_URI(STRING)" | \
 			sed 's/^.* = //
-		s/\"//g')"
+			     s/\"//g')"
 		xkill -id $child
 		if [ -n "$uri" ]; then
 			echo "$uri" >> \
 				"$WI_PROJECTFOLDER/$WI_SESSIONNAME/$filename"
 		else
-			error: cannot get the uri from this application $filename
+			 echo $ERROR_MISSING_URI_SUPPORT $filename 1>&2
 		fi
 	done
 	xkill -id $id
@@ -278,9 +249,7 @@ wi_tabbed_close_session() {
 wi_update_elvi() {
 	sr -elvi | grep -v -e "GLOBAL" -e "LOCAL" -e "Activate Surfraw defined" | \
 		cut -f 1 >$WI_ELVIFILE
-        if [ -f $WI_BOOKMARKS ];then
-        	cat $WI_BOOKMARKS | cut -f 1 | sort >> $WI_ELVIFILE
-        fi
+	cut -f 1 $WI_BOOKMARKS | sort >> $WI_ELVIFILE
 }
 
 # searchmachines and bookmarks menu
@@ -289,10 +258,10 @@ wi_surfraw_menu() {
 	if ! [ "$search" ]; then
                 return 1
         fi
-        elvi=`echo $search | cut -d " " -f 1`
+        elvi=${search%% *}
         if [ "$SR_DIRECT" = "$elvi" ]; then
-                url="$(echo "$search" | sed -e "s/^"${SR_DIRECT}" //")"
-        elif [ "`grep -e "$elvi" "$WI_ELVIFILE"`" ]; then
+                url="${search#* }"
+	elif [ "$(grep -x -e "$elvi" "$WI_ELVIFILE")" ]; then
                 url="$(sr -p $search)"
         else
                 url="$(sr -p $SR_DEFAULT $search)"
@@ -335,10 +304,10 @@ wi_session_open() {
                                 ;;
                         tabbed*)
                                 wi_tabbed_open_session \
-                                        $(echo $f |awk -F"-" '{print $2 " " $3}')
+                                        $(echo ${f#*-} | tr "-" " ")
                                 ;;
                         *)
-                                cmd=$(echo $f |awk -F"-" '{print $1}')
+                                cmd="${f%-*}"
                                 wi_${cmd}_open_session "$src/$f" "$dest"
                                 ;;
                 esac
@@ -370,7 +339,7 @@ wi_task_open() {
         if [ -d $WI_TASKFOLDER/$taskuuid ];then
                 cp -R $WI_TASKFOLDER/$taskuuid $WI_PROJECTFOLDER
         else
-                project=$(task $task | grep Project | awk '{print $2}')
+                project=$(task $task | grep Project | cut -f2 -d\ )
                 mainproject=$(echo $project | sed 's/\..*$//g')
                 while [ ".$project" != "." ];do
                         if [ -d $WI_PROJECTFOLDER/$project ]; then
@@ -427,6 +396,8 @@ wi_session_save() {
                                 ;;
                         *)
                                 echo error unhandled case
+				return 1
+				;;
                 esac
         done
 
@@ -434,11 +405,12 @@ wi_session_save() {
         for cmd in $WI_APPLICATIONS;do
                 wi_${cmd}_close_session "$src" "$dest"
         done
+	return 0
 
 }
 
 wi_session_close() {
-        if [ wi_session_save ];then
+	if [ "$(wi_session_save "$@")" ];then
                 wi_finish_closing
         fi
 }
@@ -536,6 +508,13 @@ wi_pdfmenu_two() {
 
 # other            {{{
 
+wi_session_create_helpertag() {
+	tag=$(wi_seltag)
+	newtag="${tag}-I"
+	wi_newtag "$newtag"
+	ln -s $WI_TEMPFOLDER/$tag "$WI_TEMPFOLDER/$newtag"
+}
+
 wi_session_show() {
 	folder="$WI_TEMPFOLDER/$(wi_seltag)"
 	for f in $(ls -1 $folder); do
@@ -557,7 +536,9 @@ wi_make_directories() {
 	( ! [ -d $WI_TEMPFOLDER ]    && mkdir $WI_TEMPFOLDER )
 }
 
+# }}}
+
+# create the directories if the don't exist
 wi_make_directories
 
-# }}}
 

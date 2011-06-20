@@ -16,6 +16,7 @@ usage:
    wmii-session removepath		remove a path from current tag
    wmii-session terminal1		open a terminal with first path
    wmii-session terminal2		open a terminal with second path
+   wmii-session cloentag		creates a helpertag with same session
    wmii-session show			infos of current tag
    wmii-session help			print this help
 "
@@ -32,6 +33,7 @@ case $1 in
 	removepath)	wi_remove_path;;
 	terminal1)	wi_terminal_one;;
 	terminal2)	wi_terminal_two;;
+	clonetag)	wi_session_create_helpertag;;
 	help)		session_help;;
 	show)		wi_session_show;;
 	*)		session_help;;
