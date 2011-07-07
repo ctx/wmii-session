@@ -1,0 +1,23 @@
+#compdef wmii-session
+
+_wmii-session() {
+        local curcontext="$curcontext" state line
+        typeset -A opt_args
+
+        _arguments '1: :->command' '*: :->session'
+
+        case $state in
+        command)
+                _arguments '1:Commands:(opentask closetask open close save projects addpath removepath terminal1 terminal2 show help)'
+        ;;
+        *)
+                case $words[2] in
+                open)
+			compadd "$@" $(ls $XDG_DATA_HOME/session/project)
+                ;;
+                *);;
+                esac
+        esac
+}
+
+_wmii-session "$@"

@@ -33,6 +33,7 @@ SR_DEFAULT="google"
 WI_MENU="wimenu"
 WI_MENUVERTICAL="dmenu -l 10" 
 
+WMII_TERM="urxvtc"
 # used to close terminals on close session
 WI_TERMNAME="urxvt:URxvt"
 
@@ -183,6 +184,7 @@ wi_tabbed() {
 	fi
 	tabbed 2>/dev/null | sed '1q' > $dir/$file
 	rm $dir/$file
+	return 0
 }
 
 # open tab in existing tabbed
@@ -201,6 +203,7 @@ wi_tabbed_open_tab() {
 	fi
 	cid="$(cat $idfile)"
 	${cmd} -e "$cid" "$url" 2>/dev/null &
+	return 0
 }
 
 # arg1: name
@@ -339,7 +342,7 @@ wi_task_open() {
         if [ -d $WI_TASKFOLDER/$taskuuid ];then
                 cp -R $WI_TASKFOLDER/$taskuuid $WI_PROJECTFOLDER
         else
-                project=$(task $task | grep Project | cut -f2 -d\ )
+                project=$(task $task | grep Project | sed 's/^.* //g')
                 mainproject=$(echo $project | sed 's/\..*$//g')
                 while [ ".$project" != "." ];do
                         if [ -d $WI_PROJECTFOLDER/$project ]; then

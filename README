@@ -31,6 +31,15 @@ chromium is nearly working. change the chromium "On Startup" settings, to
 "Reopen the pages that were open last". you have to use the following
 function to open chromium.
 
+You can use a seperate shell history for every Tag/Task. 
+
+if [ $(wmiir namespace) ];then
+	mkdir -p $(wmiir namespace)/$(wmiir cat /tag/sel/ctl | sed '1q')/
+	export HISTFILE=$(wmiir namespace)/$(wmiir cat /tag/sel/ctl | sed '1q')/history
+else
+	export HISTFILE=~/.history
+fi
+
 chromium() {
 	dir="$(wmiir namespace)/$(wmiir cat /tag/sel/ctl | sed '1q')/chromium"
 	if ! [ -d "$dir" ];then
@@ -41,15 +50,6 @@ chromium() {
 		chromium --user-data-dir="$dir" &
 	fi
 }
-
-You can use a seperate shell history for every Tag/Task. 
-# per tag history
-if [ $(wmiir namespace) ];then
-	mkdir -p $(wmiir namespace)/$(wi_seltag)/
-	export HISTFILE=$(wmiir namespace)/$(wi_seltag)/history
-else
-	export HISTFILE=~/.history
-fi
 
 # if you use the sample wmiirc_local, 
 you can set the mime types to use the events by default:
