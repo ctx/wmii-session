@@ -6,7 +6,7 @@ session_help() {
 echo \
 "
 usage: 
-   wmii-browser open			open url
+   wmii-browser open url		open url
    wmii-browser srmenu			surfraw menu
    wmii-browser updateelvi		update the elvi file
    wmii-browser help			print this help

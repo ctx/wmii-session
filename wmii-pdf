@@ -6,7 +6,7 @@ session_help() {
 echo \
 "
 usage: 
-   wmii-pdf open			open pdf
+   wmii-pdf open file [file ..] 	open pdf
    wmii-pdf menu1			menu with all pdfs in the first path
    wmii-pdf menu2			menu with all pdfs in the second path
    wmii-pdf help			print this help
@@ -14,7 +14,16 @@ usage:
 }
 
 case $1 in
-	open)		wi_tabbed_open_tab $WI_PDF "$(readlink -f "$2")";;
+	open)
+		while [ $# -ne 0 ]
+		do
+			ARG="$1"
+			shift
+			if [ "$ARG" != "open" ];then
+				wi_tabbed_open_tab $WI_PDF "$(readlink -f "$ARG")"
+			fi
+		done
+	;;
 	menu1)		wi_pdfmenu_one;;
 	menu2)		wi_pdfmenu_two;;
 	help)		session_help;;

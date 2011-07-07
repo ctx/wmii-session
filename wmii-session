@@ -6,11 +6,11 @@ session_help() {
 echo \
 "
 usage: 
-   wmii-session opentask <task>		open session from a task
-   wmii-session closetask <task>	save session to task
-   wmii-session open <name>		open a session template
-   wmii-session close <name>		close and save a session template
-   wmii-session save <name>             save a session template
+   wmii-session opentask taskID		open session from a task
+   wmii-session closetask taskID	save session to task
+   wmii-session open name		open a session template
+   wmii-session close name		close and save a session template
+   wmii-session save name		save a session template
    wmii-session projects		show project templates	
    wmii-session addpath			add current path to a session
    wmii-session removepath		remove a path from current tag
