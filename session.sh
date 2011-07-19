@@ -103,8 +103,12 @@ wi_seltag() {
 
 # kill all terminals an go to tag one
 wi_finish_closing() {
+	tag="$(wi_seltag)"
 	terms=$(wmiir cat /tag/sel/index | grep $WI_TERMNAME | cut -f2 -d\ )
 	wmiir xwrite /ctl view 1
+
+	rm -rf "$WI_TEMPFOLDER/$tag"
+
 	for term in $terms;do
 		wmiir xwrite /client/$term/ctl kill
 	done
@@ -159,10 +163,11 @@ wi_chromium_open_session() {
 # arg1: temporary session dir (src)
 # arg2: place to store the session (dest)
 wi_chromium_close_session() {
-	src="$1/chromium"
-	dest="$2"
-	kill $(cat $src/pid)
-	mv $src $dest
+	source="$1/chromium"
+	destination="$2"
+	kill $(cat $source/pid)
+	sleep 1
+	mv $source $destination
 }
 
 # }}}
@@ -388,6 +393,11 @@ wi_session_save() {
         fi
         mkdir $dest
 
+        # save sessions
+        for cmd in $WI_APPLICATIONS;do
+                wi_${cmd}_close_session "$src" "$dest"
+        done
+
         # backup files
         for f in $(ls -1 $src);do
                 case $f in 
@@ -404,16 +414,12 @@ wi_session_save() {
                 esac
         done
 
-        # save sessions
-        for cmd in $WI_APPLICATIONS;do
-                wi_${cmd}_close_session "$src" "$dest"
-        done
 	return 0
-
 }
 
 wi_session_close() {
-	if [ "$(wi_session_save "$@")" ];then
+	
+	if wi_session_save "$@";then
                 wi_finish_closing
         fi
 }
@@ -423,8 +429,7 @@ wi_session_close() {
 wi_session_close_menu() {
 	name="$(ls $WI_PROJECTFOLDER | $WI_MENU -p "close session:")"
 	if [ -n "$name" ];then
-		wi_session_save $name
-                wi_finish_closing
+		wi_session_close $name
 	fi
 }
 
@@ -533,9 +538,9 @@ wi_projects_show() {
 
 wi_make_directories() {
 	( ! [ -d $WI_DATAFOLDER ]    && mkdir $WI_DATAFOLDER ) && \
-	( ! [ -d $WI_PROJECTFOLDER ] && mkdir $WI_PROJECTFOLDER ) || \
-	( ! [ -d $WI_BACKUPFOLDER ]  && mkdir $WI_BACKUPFOLDER ) || \
-	( ! [ -d $WI_TASKFOLDER ]    && mkdir $WI_TASKFOLDER ) || \
+	( ! [ -d $WI_PROJECTFOLDER ] && mkdir $WI_PROJECTFOLDER ) && \
+	( ! [ -d $WI_BACKUPFOLDER ]  && mkdir $WI_BACKUPFOLDER ) && \
+	( ! [ -d $WI_TASKFOLDER ]    && mkdir $WI_TASKFOLDER ) && \
 	( ! [ -d $WI_TEMPFOLDER ]    && mkdir $WI_TEMPFOLDER )
 }
 
