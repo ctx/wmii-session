@@ -35,49 +35,49 @@ CONFIGURATION
 	* alias vim='vim --servername "$(wmiir cat /tag/sel/ctl | sed '1q')"'
 
 	* Change the chromium "On Startup" settings, to "Reopen the pages that
-	were open last". you have to use the following function to open chromium.
+	  were open last". you have to use the following function to open chromium.
 
-	chromium() {
-		dir="$(wmiir namespace)/$(wmiir cat /tag/sel/ctl | sed '1q')/chromium"
-		if ! [ -d "$dir" ];then
-			cp -R $XDG_CONFIG_HOME/chromium $dir
-			chromium --user-data-dir="$dir" &
-			echo $! > "$dir/pid" &
-		else
-			chromium --user-data-dir="$dir" &
-		fi
-	}
+		chromium() {
+			dir="$(wmiir namespace)/$(wmiir cat /tag/sel/ctl | sed '1q')/chromium"
+			if ! [ -d "$dir" ];then
+				cp -R $XDG_CONFIG_HOME/chromium $dir
+				chromium --user-data-dir="$dir" &
+				echo $! > "$dir/pid" &
+			else
+				chromium --user-data-dir="$dir" &
+			fi
+		}
 
 	* You can use a seperate shell history for every Tag/Task. 
 
-	if [ $(wmiir namespace) ];then
-		mkdir -p $(wmiir namespace)/$(wmiir cat /tag/sel/ctl | sed '1q')/
-		export HISTFILE=$(wmiir namespace)/$(wmiir cat /tag/sel/ctl | sed '1q')/history
-	else
-		export HISTFILE=~/.history
-	fi
+		if [ $(wmiir namespace) ];then
+			mkdir -p $(wmiir namespace)/$(wmiir cat /tag/sel/ctl | sed '1q')/
+			export HISTFILE=$(wmiir namespace)/$(wmiir cat /tag/sel/ctl | sed '1q')/history
+		else
+			export HISTFILE=~/.history
+		fi
 
 * if you use the sample wmiirc_local, 
-you can set the mime types to use the events by default:
+  you can set the mime types to use the events by default:
 
-xdg-mime default openurl.desktop application/xhtml_xml
-xdg-mime default openurl.desktop text/html
-xdg-mime default openurl.desktop text/xml
-xdg-mime default openpdf.desktop application/pdf
+	xdg-mime default openurl.desktop application/xhtml_xml
+	xdg-mime default openurl.desktop text/html
+	xdg-mime default openurl.desktop text/xml
+	xdg-mime default openpdf.desktop application/pdf
 
 
 ------------------------------------------------------------------------------
 ## USAGE
 ------------------------------------------------------------------------------
 
-run wmii-session wmii-browser and wmii-pdf
-or try the sample wmiirc_local
-and use openurl and openpdf to use the events
+* run wmii-session wmii-browser and wmii-pdf
+  or try the sample wmiirc_local
+  and use openurl and openpdf to use the events
 
-you can save a session template named foo and foo.bar
-now when you open a task in project foo.bar.baz with no saved session
-the session template foo.bar will be loaded. If you open a task
-in the project foo.baz.blah the template foo will be loaded
+* you can save a session template named foo and foo.bar
+  now when you open a task in project foo.bar.baz with no saved session
+  the session template foo.bar will be loaded. If you open a task
+  in the project foo.baz.blah the template foo will be loaded
 
 
 
