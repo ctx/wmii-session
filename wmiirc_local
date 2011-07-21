@@ -36,9 +36,9 @@ KeyGroup additional functionality for tags
 Key $MODKEY-Control-Shift-d	# remove path from tag
 	eval wi_remove_path
 Key $MODKEY-Shift-Return	# open term path 1
-	eval wi_terminal_one &
+	eval wi_terminal 1 &
 Key $MODKEY-Control-Return	# open term path 2
-	eval wi_terminal_two &
+	eval wi_terminal 2 &
 !
 }
 
