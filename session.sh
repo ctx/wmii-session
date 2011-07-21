@@ -492,26 +492,6 @@ wi_terminal_two() {
 	fi
 }
 
-wi_pdfmenu_one() {
-	path=$(cat $WI_TEMPFOLDER/$(wi_seltag)/path | awk 'FNR == 1')
-	if [ -n "$path" ];then
-		file="$(find $path -name "*.pdf" | sort | $WI_MENUVERTICAL)"
-		if [ -n "$file" ];then
-			wi_tabbed_open_tab $WI_PDF "$file"
-		fi
-	fi
-}
-
-wi_pdfmenu_two() {
-	path=$(cat $WI_TEMPFOLDER/$(wi_seltag)/path | awk 'FNR == 2')
-	if [ -n "$path" ];then
-		file="$(find $path -name "*.pdf" | sort | $WI_MENUVERTICAL)"
-		if [ -n "$file" ];then
-			wi_tabbed_open_tab $WI_PDF "$file"
-		fi
-	fi
-}
-
 # }}}
 
 # other            {{{

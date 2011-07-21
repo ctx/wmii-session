@@ -6,15 +6,15 @@ session_help() {
 echo \
 "
 usage: 
-   wmii-pdf open file [file ..] 	open pdf
-   wmii-pdf menu1			menu with all pdfs in the first path
-   wmii-pdf menu2			menu with all pdfs in the second path
+   wmii-pdf file [file ..] 		open pdf(s)
    wmii-pdf help			print this help
 "
 }
 
+( [ -z "$1" ] && session_help )
 case $1 in
-	open)
+	help)		session_help;;
+	*)
 		while [ $# -ne 0 ]
 		do
 			ARG="$1"
@@ -24,10 +24,8 @@ case $1 in
 			fi
 		done
 	;;
-	menu1)		wi_pdfmenu_one;;
-	menu2)		wi_pdfmenu_two;;
-	help)		session_help;;
-	*)		session_help;;
 esac
+
+
 
 # vim:filetype=sh

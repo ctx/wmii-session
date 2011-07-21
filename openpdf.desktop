@@ -1,8 +1,0 @@
-[Desktop Entry]
-Name=Document Viewer
-Exec=openpdf
-StartupNotify=true
-Terminal=true
-Type=Application
-NoDisplay=true
-MimeType=application/pdf;
