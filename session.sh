@@ -472,24 +472,16 @@ wi_remove_path() {
 	fi
 }
 
-wi_terminal_one() {
+wi_terminal() {
+	number=$1
 	if ! [ -f "$WI_TEMPFOLDER/$(wi_seltag)/path" ];then
                 # nothing to do
                 return 0
         fi
-        path=$(cat $WI_TEMPFOLDER/$(wi_seltag)/path | awk 'FNR == 1')
+        path=$(cat $WI_TEMPFOLDER/$(wi_seltag)/path | awk -v numb="$1" 'FNR == numb')
         if [ -n "$path" ];then
                 ${WMII_TERM} -cd "$path"
         fi
-}
-
-wi_terminal_two() {
-	if [ -f "$WI_TEMPFOLDER/$(wi_seltag)/path" ];then
-		path=$(cat $WI_TEMPFOLDER/$(wi_seltag)/path | awk 'FNR == 2')
-		if [ -n "$path" ];then
-			${WMII_TERM} -cd "$path"
-		fi
-	fi
 }
 
 # }}}
