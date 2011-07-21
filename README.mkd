@@ -21,8 +21,6 @@ INSTALLATION
 * copy session.sh, wmiirc_local, wmii-session, wmii-browser and wmii-pdf
 where you like, and adjust the source commands in those files.
 
-* and you may copy *.desktop to $XDG_DATA_HOME/applications
-
 * if you like to use vimprobable2 or zathura you have to apply the patches
 
 
@@ -50,6 +48,7 @@ CONFIGURATION
             fi
         }
     
+
     * You can use a seperate shell history for every Tag/Task. 
     
         if [ $(wmiir namespace) ];then
@@ -58,15 +57,6 @@ CONFIGURATION
         else
             export HISTFILE=~/.history
         fi
-    
-
-* if you use the sample wmiirc_local, 
-  you can set the mime types to use the events by default:
-
-    xdg-mime default openurl.desktop application/xhtml_xml
-    xdg-mime default openurl.desktop text/html
-    xdg-mime default openurl.desktop text/xml
-    xdg-mime default openpdf.desktop application/pdf
 
 
 ------------------------------------------------------------------------------
@@ -75,7 +65,6 @@ CONFIGURATION
 
 * run wmii-session wmii-browser and wmii-pdf
   or try the sample wmiirc_local
-  and use openurl and openpdf to use the events
 
 * you can save a session template named foo and foo.bar
   now when you open a task in project foo.bar.baz with no saved session
