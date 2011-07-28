@@ -22,7 +22,7 @@ WI_PDF='zathura viewer'
 
 # places browser
 WI_BOOKMARKS="$HOME/.config/surfraw/bookmarks"
-WI_ELVIFILE="$WI_TEMPFOLDER/elvilist"
+WI_ELVIFILE="$HOME/.wmii/elvilist"
 
 # surfraw go to url shortcut
 SR_DIRECT="g"
@@ -33,7 +33,7 @@ SR_DEFAULT="google"
 WI_MENU="wimenu"
 WI_MENUVERTICAL="dmenu -l 10" 
 
-WMII_TERM="urxvtc"
+WMII_TERM="urxvt"
 # used to close terminals on close session
 WI_TERMNAME="urxvt:URxvt"
 
@@ -321,8 +321,8 @@ wi_session_open() {
                 esac
         done
 
-        wi_terminal_one
-        wi_terminal_two
+        wi_terminal 1
+        wi_terminal 2
 }
 
 wi_session_open_menu() {
