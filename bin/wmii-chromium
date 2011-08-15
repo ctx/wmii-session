@@ -1,0 +1,10 @@
+#!/bin/sh
+
+dir="$(wmiir namespace)/$(wmiir cat /tag/sel/ctl | sed '1q')/chromium"
+if ! [ -d "$dir" ];then
+	cp -R $XDG_CONFIG_HOME/chromium $dir
+	/usr/bin/chromium --user-data-dir="$dir" 2>/dev/null &
+	echo $! > "$dir/pid" &
+else
+	/usr/bin/chromium --user-data-dir="$dir" 2>/dev/null&
+fi

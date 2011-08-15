@@ -17,7 +17,7 @@ Event OpenURL
 
 # Keys
 KeyGroup surfraw
-Key $MODKEY-g      # Open web
+Key $MODKEY-g      		# Open web
 	eval wi_surfraw_menu &
 Key $MODKEY-Shift-g		# update elvis
 	eval wi_update_eliv
