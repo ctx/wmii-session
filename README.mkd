@@ -2,7 +2,7 @@ wmii-session
 ==============================================================================
 
 ------------------------------------------------------------------------------
-DEPENDENCIES 
+## DEPENDENCIES 
 ------------------------------------------------------------------------------
 
 (tested with)
@@ -15,38 +15,43 @@ vimprobable2, zathura with patches
 
 
 ------------------------------------------------------------------------------
-INSTALLATION
+## INSTALLATION
 ------------------------------------------------------------------------------
 
-* copy session.sh, wmiirc_local, wmii-session, wmii-browser and wmii-pdf where you like, and adjust the source commands in those files.
+* copy session.sh, wmiirc_local, wmii-session, wmii-browser and wmii-pdf where
+  you like, and adjust the source commands in those files.
 
 * if you like to use vimprobable2 or zathura you have to apply the patches
 
 
 ------------------------------------------------------------------------------
-CONFIGURATION
+## CONFIGURATION
 ------------------------------------------------------------------------------
 
 * On top of session.sh you can set some variables
 
 * in your shell rc:
 
-    WI_NAMESPACE="$(wmiir namespace 2>/dev/null)"
-    if [ $WI_NAMESPACE ];then
-        # Per tag history
-        TAG="$(wmiir cat /tag/sel/ctl | sed '1q')"
-        
-        mkdir -p $WI_NAMESPACE/$TAG
-        export HISTFILE=$WI_NAMESPACE/$TAG/history
-        
-        # Start vim as server
-        alias vim="vim --servername $TAG"
-    else
-        export HISTFILE=~/.history
-    fi
-    unset WI_NAMESPACE TAG
+        WI_NAMESPACE="$(wmiir namespace 2>/dev/null)"
 
-* Change the chromium "On Startup" settings, to "Reopen the pages that were open last". you have to use the following function to open chromium. Use this script to start chromium
+        if [ $WI_NAMESPACE ];then
+            # Per tag history
+            TAG="$(wmiir cat /tag/sel/ctl | sed '1q')"
+            
+            mkdir -p $WI_NAMESPACE/$TAG
+            export HISTFILE=$WI_NAMESPACE/$TAG/history
+            
+            # Start vim as server
+            alias vim="vim --servername $TAG"
+        else
+            export HISTFILE=~/.history
+        fi
+
+        unset WI_NAMESPACE TAG
+
+* Change the chromium "On Startup" settings, to "Reopen the pages that were
+  open last". you have to use the following function to open chromium. Use this
+  script to start chromium
 
     
 ------------------------------------------------------------------------------
@@ -55,7 +60,10 @@ CONFIGURATION
 
 * run wmii-session wmii-browser and wmii-pdf and/or try the sample wmiirc_local
 
-* If you save two session templates named foo and foo.bar, you can open a task in project foo.bar.baz with no saved session and the session template foo.bar will be loaded. If you open a task in the project foo.baz.blah the template foo will be loaded
+* If you save two session templates named foo and foo.bar, you can open a task
+  in project foo.bar.baz with no saved session and the session template foo.bar
+  will be loaded. If you open a task in the project foo.baz.blah the template
+  foo will be loaded
 
 
 ------------------------------------------------------------------------------
