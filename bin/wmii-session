@@ -2,46 +2,51 @@
 
 . ~/.wmii-hg/session.sh
 
-session_help() {
-echo \
-"
-usage: 
-   wmii-session opentask taskID		open session from a task
-   wmii-session closetask taskID	save session to task
-   wmii-session open name		open a session template
-   wmii-session close name		close and save a session template
-   wmii-session save name		save a session template
-   wmii-session projects		show project templates	
-   wmii-session addpath			add current path to a session
-   wmii-session removepath		remove a path from current tag
-   wmii-session terminal1		open a terminal with first path
-   wmii-session terminal2		open a terminal with second path
-   wmii-session cloentag		creates a helpertag with same session
-   wmii-session show			infos of current tag
-   wmii-session help			print this help
-"
+usage() {
+        echo "Usage:"
+        echo "      wmii-session argument"
+        echo "Arguments:"
+        echo "-o, opentask NAME|TASKID    open session from a task"
+        echo "-c, closetask NAME|TASKID   save session to task"
+        echo "-s, save NAME               save a session template"
+        echo "    restore NAME|TASKID     restore session to previous session"
+        echo "-t, terminal NUMBER         open a terminal with path on line NUMBER"
+        echo "-p, projects                show project templates"
+        echo "-a, addpath                 add current path to a session"
+        echo "    removepath              remove a path from current tag"
+        echo "    clonetag                creates a helpertag with same session"
+        echo "-i, info                    infos of current tag"
+        echo "-h, help                    print this help"
 }
 
 case $1 in
-	opentask)	wi_task_cli_open $2;;
-	closetask)	wi_task_cli_close $2;;
-	open)		wi_session_open $2;;
-	close)		wi_session_close $2;;
-        save)           wi_session_save $2;;
-	projects)	wi_projects_show;;
-	addpath)	wi_add_path;;
-	removepath)	wi_remove_path;;
-	terminal1)	wi_terminal_one;;
-	terminal2)	wi_terminal_two;;
-	clonetag)	wi_session_create_helpertag;;
-	help)		session_help;;
-	show)		wi_session_show;;
-	*)		session_help;;
+    -o|open)
+        wi_session_open $2;;
+    -c|close)	
+        wi_session_close $2;;
+    -s|save)           
+        wi_session_save $2;;
+    restore)        
+        wi_session_restore_last $2;;
+    -p|projects)	
+        wi_projects_show;;
+    -a|addpath)	
+        wi_add_path;;
+    -r|removepath)	
+        wi_remove_path;;
+    -t|terminal)
+        wi_terminal $2;;
+    clonetag)
+        wi_session_create_helpertag;;
+    -i|info)
+        wi_session_show;;
+    -h|help)
+        usage
+        exit 1;;
+    *)
+        usage
+        exit 1;;
 esac
+exit $?
 
-
-
-
-
-
-# vim:filetype=sh
+# vim: ft=sh ts=4 et sw=4:

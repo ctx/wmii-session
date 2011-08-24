@@ -1,8 +1,8 @@
 #!/bin/dash -f
 
-export WMII_TERM="urxvt"
-
 . ~/.wmii-hg/session.sh
+
+export WMII_TERM="urxvt"
 
 local_events () {
 	cat <<'!'
@@ -39,6 +39,10 @@ Key $MODKEY-Shift-Return	# open term path 1
 	eval wi_terminal 1 &
 Key $MODKEY-Control-Return	# open term path 2
 	eval wi_terminal 2 &
+
+KeyGroup Help
+Key $MODKEY-F1                  # open wmii.pdf in doc tabbed
+	wi_tabbed_open_tab zathura doc /usr/share/doc/wmii/wmii.pdf &
 !
 }
 
