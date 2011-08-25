@@ -153,7 +153,7 @@ wi_vim_open_session() {
     session="$1"
     dir="$2"
     $WMII_TERM -e vim --servername "$(wi_seltag)" \
-        -S "$session"
+        -S "$session" &
 }
 
 # close vim session
@@ -196,6 +196,7 @@ wi_chromium_close_session() {
         return 1
     fi
     destination="$2"
+    # chromium changes its pid sometimes
     kill $(cat $source/pid)
     sleep 1
     mv $source $destination
