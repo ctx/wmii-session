@@ -2,30 +2,29 @@
 
 . ~/.wmii-hg/session.sh
 
-session_help() {
-echo \
-"
-usage: 
-   wmii-pdf file [file ..] 		open pdf(s)
-   wmii-pdf help			print this help
-"
+usage() {
+    echo "usage:"
+    echo "      wmii-pdf argument"
+    echo "Arguments:"
+    echo "-o, open FILES              open one or more pdf files"
+    echo "-h, help                    print this help"
 }
 
-( [ -z "$1" ] && session_help )
 case $1 in
-	help)		session_help;;
-	*)
-		while [ $# -ne 0 ]
-		do
-			ARG="$1"
-			shift
-			if [ "$ARG" != "open" ];then
-				wi_tabbed_open_tab $WI_PDF "$(readlink -f "$ARG")"
-			fi
-		done
-	;;
+    -o|open)
+        while [ $# -ne 0 ]
+        do
+            ARG="$1"
+            shift
+            if [ "$ARG" != "open" -a "$ARG" != "-o" ];then
+                wi_tabbed_open_tab $WI_PDF "$(readlink -f "$ARG")"
+            fi
+        done
+        ;;
+    help)		
+        usage;;
+    *)		
+        usage;;
 esac
 
-
-
-# vim:filetype=sh
+# vim: ft=sh ts=4 et sw=4:

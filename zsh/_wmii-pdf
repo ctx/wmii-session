@@ -8,11 +8,11 @@ _wmii-pdf() {
 
         case $state in
         command)
-                _arguments '1:Commands:(open menu1 menu2 help)'
+                _arguments '1:Commands:(-o open -h help)'
         ;;
         *)
                 case $words[2] in 
-                open)
+                -o|open)
                         _files -g '*.pdf'
                 ;;
                 *);;
