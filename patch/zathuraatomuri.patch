@@ -1,5 +1,5 @@
---- src/zathura/zathura.c	2011-04-04 12:07:28.553333479 +0200
-+++ src/zathuraatomuri2/zathura.c	2011-04-04 15:17:06.130000386 +0200
+--- zathura-0.0.8.4/zathura.c	2011-07-13 00:09:25.000000000 +0200
++++ zathura-atomuri-0.0.8.4/zathura.c	2011-08-25 13:16:15.854482003 +0200
 @@ -18,6 +18,9 @@
  #include <gtk/gtk.h>
  #include <gdk/gdkkeysyms.h>
@@ -19,7 +19,7 @@
  /* zathura */
  struct
  {
-@@ -714,6 +719,8 @@
+@@ -729,6 +734,8 @@
    Zathura.UI.inputbar          = GTK_ENTRY(gtk_entry_new());
    Zathura.UI.document            = gtk_event_box_new();
  
@@ -28,7 +28,7 @@
    /* window */
    gtk_window_set_title(GTK_WINDOW(Zathura.UI.window), "zathura");
    GdkGeometry hints = { 1, 1 };
-@@ -1425,6 +1432,19 @@
+@@ -1450,6 +1457,19 @@
    set_page(start_page);
    update_status();
  
@@ -48,7 +48,7 @@
    g_static_mutex_unlock(&(Zathura.Lock.pdf_obj_lock));
    isc_abort(NULL);
    return TRUE;
-@@ -4723,6 +4743,15 @@
+@@ -4856,6 +4876,15 @@
    init_bookmarks();
    init_look();
  
@@ -64,7 +64,7 @@
    if(argc > 1)
    {
      char* password = (argc == 3) ? argv[2] : NULL;
-@@ -4735,15 +4764,6 @@
+@@ -4868,15 +4897,6 @@
    switch_view(Zathura.UI.document);
    update_status();
  
