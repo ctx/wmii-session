@@ -1,3 +1,3 @@
 #compdef wmii-browser
 
-_arguments '1: :(open srmenu updateelvi help)'
+_arguments '1: :(-o open -s srmenu -u updateelvi -h help)'

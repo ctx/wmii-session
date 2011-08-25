@@ -3,7 +3,7 @@
 . ~/.wmii-hg/session.sh
 
 usage() {
-    echo "usage:"
+    echo "Usage:"
     echo "      wmii-pdf argument"
     echo "Arguments:"
     echo "-o, open FILES              open one or more pdf files"
