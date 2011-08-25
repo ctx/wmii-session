@@ -14,7 +14,7 @@ usage() {
 
 case $1 in
     -o|open)
-        wi_tabbed_open_tab $WI_URL "$2";;
+        $BROWSER "$2";;
     -s|srmenu)
         wi_surfraw_menu;;
     -u|updateelvi)

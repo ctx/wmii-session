@@ -3,7 +3,7 @@
 . ~/.wmii-hg/session.sh
 
 usage() {
-    echo "Usage:"
+    echo "usage:"
     echo "      wmii-pdf argument"
     echo "Arguments:"
     echo "-o, open FILES              open one or more pdf files"
@@ -17,7 +17,7 @@ case $1 in
             ARG="$1"
             shift
             if [ "$ARG" != "open" -a "$ARG" != "-o" ];then
-                wi_tabbed_open_tab $WI_PDF "$(readlink -f "$ARG")"
+                $PDFREADER "$(readlink -f "$ARG")"
             fi
         done
         ;;

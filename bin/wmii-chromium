@@ -2,9 +2,14 @@
 
 dir="$(wmiir namespace)/$(wmiir cat /tag/sel/ctl | sed '1q')/chromium"
 if ! [ -d "$dir" ];then
-	cp -R $XDG_CONFIG_HOME/chromium $dir
-	/usr/bin/chromium --user-data-dir="$dir" 2>/dev/null &
-	echo $! > "$dir/pid" &
+        cp -R $XDG_CONFIG_HOME/chromium $dir
+        /usr/bin/chromium --user-data-dir="$dir" "$1" > /dev/null 2>&1 &
+        echo $! > "$dir/pid" &
 else
-	/usr/bin/chromium --user-data-dir="$dir" 2>/dev/null&
+        if [ -z "$1" ];then
+                url="about:blank" # better open new tab page
+        else
+                url="$1"
+        fi
+        /usr/bin/chromium --user-data-dir="$dir" "$url" > /dev/null 2>&1 &
 fi

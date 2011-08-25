@@ -1,11 +1,20 @@
 # config           {{{
 
-# places session
+# Session directories
 WI_DATAFOLDER="$XDG_DATA_HOME/session"
 WI_PROJECTFOLDER="$WI_DATAFOLDER/project"
 WI_BACKUPFOLDER="$WI_DATAFOLDER/backup"
 WI_TASKFOLDER="$WI_DATAFOLDER/task"
 WI_TEMPFOLDER="$(wmiir namespace)"
+
+# Set your default browser
+BROWSER="wmii-chromium"
+# Tabbed:'function'        'executable'  'container name'
+#BROWSER="wi_tabbed_open_tab vimprobable2 browser"
+#BROWSER="wi_tabbed_open_tab surf browser"
+
+# Set your default pdf reader
+PDFREADER="wi_tabbed_open_tab zathura pdfreader"
 
 # List of used applications with session support.
 # This is the name of two functions whitch must exist:
@@ -13,24 +22,20 @@ WI_TEMPFOLDER="$(wmiir namespace)"
 # wi_$APP_close_sessions
 WI_APPLICATIONS='vim chromium'
 
-# List of applications embedded in tabbed.
-WI_URL='vimprobable2 browser'
-WI_PDF='zathura viewer'
-
 # places browser
 WI_BOOKMARKS="$HOME/.config/surfraw/bookmarks"
 WI_ELVIFILE="$HOME/.wmii-hg/elvilist"
-
-# surfraw go to url shortcut
+# Surfraw go to url shortcut
 SR_DIRECT="g"
-# surfraw default searchengine
+# Surfraw default searchengine
 SR_DEFAULT="google"
 
-# menu commands
+# Menu commands
 WI_MENU="wimenu"
 WI_MENUVERTICAL="dmenu -l 10" 
 
-WMII_TERM="urxvtc"
+# Terminal
+WMII_TERM="urxvt"
 # used to close terminals on close session
 WI_TERMNAME="urxvt:URxvt"
 
@@ -45,6 +50,7 @@ ERROR_MISSING_URI_SUPPORT="Error: This application has no ATOM calld _URI(STRING
 ERROR_NO_NUMBER="ERROR: not a Number"
 # }}}
 
+# shell functions  {{{
 wi_is_number() {
     if [ -n "$1" ];then
         if [ -z "$(echo $1 | tr -d 0-9)" ];then
@@ -55,6 +61,7 @@ wi_is_number() {
     fi
     return 1
 }
+# }}}
 
 # taskwarrior      {{{
 
@@ -289,6 +296,9 @@ wi_update_elvi() {
 
 # searchmachines and bookmarks menu
 wi_surfraw_menu() {
+    if ! [ -f $WI_ELVIFILE ];then
+        wi_update_elvi
+    fi
     search="$($WI_MENU -p "search the web:" <$WI_ELVIFILE)"
     if ! [ "$search" ]; then
         return 1
@@ -301,7 +311,7 @@ wi_surfraw_menu() {
     else
         url="$(sr -p $SR_DEFAULT $search)"
     fi
-    wi_tabbed_open_tab $WI_URL "$url"
+    $BROWSER "$url"
 }
 
 #  }}} 
