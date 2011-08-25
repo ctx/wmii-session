@@ -1,6 +1,11 @@
 wmii-session
 ==============================================================================
 
+Save the open windows of your favorite programs from one wmii tag to a folder.
+Link your sessions to projects or tasks from taskwarrior.
+Restore a session on a new wmii tag. 
+
+
 ------------------------------------------------------------------------------
 ## DEPENDENCIES 
 ------------------------------------------------------------------------------
@@ -8,6 +13,8 @@ wmii-session
 (tested with)
 
 wmii, vim (gvim in Arch), tabbed, surf, urxvt
+
+Chromium
 
 task (taskwarrior.org), surfraw
 
@@ -18,17 +25,17 @@ vimprobable2, zathura with patches
 ## INSTALLATION
 ------------------------------------------------------------------------------
 
-* Copy session.sh and wmiirc_local to .wmii-hg. Copy the files from bin in your
-  PAHT.
+* Copy session.sh and wmiirc_local to .wmii-hg. Copy the files from bin to
+  /usr/bin or ~/bin.
 
-* if you like to use vimprobable2 or zathura you have to apply the patches
+* If you like to use vimprobable2 or zathura you have to apply the patches.
 
 
 ------------------------------------------------------------------------------
 ## CONFIGURATION
 ------------------------------------------------------------------------------
 
-* On top of session.sh you can set some variables
+* On top of session.sh you can set some variables.
 
 * in your shell rc:
 
@@ -49,18 +56,19 @@ vimprobable2, zathura with patches
 
         unset WI_NAMESPACE TAG
 
-    
+
 ------------------------------------------------------------------------------
 ## USAGE
 ------------------------------------------------------------------------------
 
-* run wmii-session wmii-browser and wmii-pdf wmii-chromium and/or try the
-  sample wmiirc_local
+* run wmii-session wmii-browser and wmii-pdf and/or try the sample wmiirc_local
 
 * If you save two session templates named foo and foo.bar, you can open a task
   in project foo.bar.baz with no saved session and the session template foo.bar
   will be loaded. If you open a task in the project foo.baz.blah the template
   foo will be loaded
+
+* Open chromium with the wmii-chromium command.
 
 
 ------------------------------------------------------------------------------
