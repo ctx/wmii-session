@@ -22,7 +22,7 @@ PDFREADER="wi_tabbed_open_tab zathura pdfreader"
 # wi_$APP_close_sessions
 WI_APPLICATIONS='vim chromium'
 
-# places browser
+# Surfraw files
 WI_BOOKMARKS="$HOME/.config/surfraw/bookmarks"
 WI_ELVIFILE="$HOME/.wmii-hg/elvilist"
 # Surfraw go to url shortcut
@@ -168,7 +168,7 @@ wi_vim_close_session() {
         sessionfile="$dest/vim-$vimserver"
         vim --remote-send \
             '<Esc>:wa<CR>:mks '${sessionfile}'<CR>:wqa<CR>' \
-            --servername $vimserver 
+            --servername $vimserver &
     done
 }
 
@@ -196,7 +196,6 @@ wi_chromium_close_session() {
         return 1
     fi
     destination="$2"
-    # chromium changes its pid sometimes
     kill $(cat $source/pid)
     sleep 1
     mv $source $destination
@@ -216,15 +215,13 @@ wi_tabbed() {
     tag="$3"
     dir="$WI_TEMPFOLDER/$tag"
     file="tabbed-$cmd-$name"
-    if ! [ -d $dir ]; then
-        mkdir $dir
-    fi
+    ! [ -d $dir ] && mkdir $dir
     tabbed 2>/dev/null | sed '1q' > $dir/$file
     rm $dir/$file
     return 0
 }
 
-# open tab in existing tabbed
+# start tabbed if necessary and open tab
 # arg1: cmd
 # arg2: name
 # arg3: path to file/url
@@ -236,15 +233,18 @@ wi_tabbed_open_tab() {
     idfile="$WI_TEMPFOLDER/$tag/tabbed-$cmd-$name"
     if ! [ -f "$idfile" ];then
         wi_tabbed "$name" "$cmd" "$tag" &
-        sleep 0.2
     fi
-    cid="$(cat $idfile)"
+    while ! [ -n "$cid" ]; do
+        cid="$(cat $idfile 2>/dev/null)"
+    done
     ${cmd} -e "$cid" "$url" 2>/dev/null &
     return 0
 }
 
+# load urls from file and start them in a tabbed
 # arg1: name
 # arg2: cmd
+# arg3: session dir
 wi_tabbed_open_session() {
     cmd="$1"
     name="$2"
@@ -259,7 +259,9 @@ wi_tabbed_open_session() {
     done < "$file"
 }
 
-#arg1: idfile
+# close tabbed and save all urls from the childs to a file
+# arg1: idfile
+# arg2: session dir
 wi_tabbed_close_session() {
     file="$1"
     dir="$2"
@@ -271,12 +273,12 @@ wi_tabbed_close_session() {
     for child in $childs; do
         uri="$(xprop -id $child | grep "_URI(STRING)" | \
             sed 's/^.* = //
-        s/\"//g')"
+                 s/\"//g')"
         xkill -id $child
         if [ -n "$uri" ]; then
             echo $dir/$filename
             echo "$uri" >> \
-                "$dir/$filename"
+                 "$dir/$filename"
         else
             echo $ERROR_MISSING_URI_SUPPORT $filename 1>&2
         fi
@@ -370,11 +372,11 @@ wi_session_open() {
                 ;;
             tabbed*)
                 wi_tabbed_open_session \
-                    $(echo ${f#*-} | tr "-" " ") "$src"
+                    $(echo ${f#*-} | tr "-" " ") "$src" &
                 ;;
             *)
                 cmd="${f%-*}"
-                wi_${cmd}_open_session "$src/$f" "$dest"
+                wi_${cmd}_open_session "$src/$f" "$dest" &
                 ;;
         esac
     done
