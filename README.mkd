@@ -39,7 +39,7 @@ vimprobable2, zathura with patches
 
 * in your shell rc:
 
-        WI_NAMESPACE="$(wmiir ls / >/dev/null)"
+        WI_NAMESPACE="$(wmiir ls / 2>/dev/null)"
 
         if [ $WI_NAMESPACE ];then
             # Separat shell history for each tag
