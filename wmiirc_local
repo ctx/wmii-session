@@ -20,7 +20,7 @@ KeyGroup surfraw
 Key $MODKEY-g      		# Open web
 	eval wi_surfraw_menu &
 Key $MODKEY-Shift-g		# update elvis
-	eval wi_update_eliv
+	eval wi_update_elvi
 
 KeyGroup session
 Key $MODKEY-q			# close task
