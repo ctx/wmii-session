@@ -2,7 +2,9 @@ wmii-session
 ==============================================================================
 
 Save the open windows of your favorite programs from one wmii tag to a folder.
+
 Link your sessions to projects or tasks from taskwarrior.
+
 Restore a session on a new wmii tag. 
 
 
@@ -14,7 +16,7 @@ Restore a session on a new wmii tag.
 
 wmii, vim (gvim in Arch), tabbed, surf, urxvt
 
-Chromium
+Chromium (uses ~200MB for every session)
 
 task (taskwarrior.org), surfraw
 
@@ -37,7 +39,8 @@ vimprobable2, zathura with patches
 
 * On top of session.sh you can set some variables.
 
-* in your shell rc:
+* Add the following to your shell rc. This makes it possible to save vim
+  sessions and the shell history:
 
         WI_NAMESPACE="$(wmiir ls / 2>/dev/null)"
 
@@ -66,18 +69,20 @@ vimprobable2, zathura with patches
 * If you save two session templates named foo and foo.bar, you can open a task
   in project foo.bar.baz with no saved session and the session template foo.bar
   will be loaded. If you open a task in the project foo.baz.blah the template
-  foo will be loaded
+  foo will be loaded.
 
-* Open chromium with the wmii-chromium command.
+* Open chromium with the wmii-chromium command. This uses too much hd space.
 
 
 ------------------------------------------------------------------------------
 ## TODO
 ------------------------------------------------------------------------------
 
-* support more applications
+* A "plugin system" that allows easy adding:
 
-* support other wms
+        * support for more applications (example vim: 147 to 173 in session.sh)
+
+        * and support for other wms (example wmii: 120 to 145 in session.sh).
 
 * use dmtcp
 
