@@ -14,7 +14,7 @@ Restore a session on a new wmii tag.
 
 (tested with)
 
-wmii, vim (gvim in Arch), tabbed, surf, urxvt
+wmii, gvim, tabbed, surf, urxvt
 
 Chromium (uses ~200MB for every session)
 
