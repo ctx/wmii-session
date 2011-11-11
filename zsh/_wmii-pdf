@@ -8,7 +8,7 @@ _wmii-pdf() {
 
         case $state in
         command)
-                _arguments '1:Commands:(-o open -h help)'
+                _arguments '1:Commands:( open help)'
         ;;
         *)
                 case $words[2] in 

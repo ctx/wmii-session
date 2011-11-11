@@ -8,7 +8,7 @@ _wmii-session() {
 
         case $state in
         command)
-                _arguments '1:Commands:(-o open, -c close -s save restore -t terminal -p projects -a addpath removepath clonetag -i info -h help)'
+                _arguments '1:Commands:(open close save restore terminal projects addpath removepath clonetag info help)'
         ;;
         *)
                 case $words[2] in
