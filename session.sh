@@ -8,10 +8,10 @@ WI_TASKFOLDER="$WI_DATAFOLDER/task"
 WI_TEMPFOLDER="$(wmiir namespace)"
 
 # Set your default browser
-BROWSER="wmii-chromium"
+#BROWSER="wmii-chromium"
 # Tabbed:'function'        'executable'  'container name'
 #BROWSER="wi_tabbed_open_tab vimprobable2 browser"
-#BROWSER="wi_tabbed_open_tab surf browser"
+BROWSER="wi_tabbed_open_tab surf browser"
 
 # Set your default pdf reader
 PDFREADER="wi_tabbed_open_tab zathura pdfreader"
@@ -20,7 +20,8 @@ PDFREADER="wi_tabbed_open_tab zathura pdfreader"
 # This is the name of two functions whitch must exist:
 # wi_$APP_open_session 
 # wi_$APP_close_sessions
-WI_APPLICATIONS='vim chromium'
+#WI_APPLICATIONS='vim chromium'
+WI_APPLICATIONS='vim'
 
 # Surfraw files
 WI_BOOKMARKS="$HOME/.config/surfraw/bookmarks"
@@ -216,7 +217,7 @@ wi_tabbed() {
     dir="$WI_TEMPFOLDER/$tag"
     file="tabbed-$cmd-$name"
     ! [ -d $dir ] && mkdir $dir
-    tabbed 2>/dev/null | sed '1q' > $dir/$file
+    eval tabbed 2>/dev/null | sed '1q' > $dir/$file
     rm $dir/$file
     return 0
 }
