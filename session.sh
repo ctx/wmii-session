@@ -238,6 +238,11 @@ wi_tabbed_open_tab() {
     while ! [ -n "$cid" ]; do
         cid="$(cat $idfile 2>/dev/null)"
     done
+
+    cid=$(printf "%d\n" $cid)
+    echo $cid > $idfile
+    echo $atom >> $idfile
+
     ${cmd} -e "$cid" "$url" 2>/dev/null &
     return 0
 }
