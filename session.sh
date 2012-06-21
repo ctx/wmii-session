@@ -24,6 +24,10 @@ WI_vimprobable2_ATOM () {
     echo "_URI(STRING)"
 }
 
+WI_surf_ATOM () {
+    echo "_URI(STRING)"
+}
+
 # List of used applications with session support.
 # This is the name of two functions whitch must exist:
 # wi_$APP_open_session 
