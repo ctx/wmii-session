@@ -16,6 +16,14 @@ BROWSER="wi_tabbed_open_tab surf browser"
 # Set your default pdf reader
 PDFREADER="wi_tabbed_open_tab zathura pdfreader"
 
+# Atoms
+WI_zathura_ATOM () {
+    echo "WM_NAME(STRING)"
+}
+WI_vimprobable2_ATOM () {
+    echo "_URI(STRING)"
+}
+
 # List of used applications with session support.
 # This is the name of two functions whitch must exist:
 # wi_$APP_open_session 
@@ -275,12 +283,14 @@ wi_tabbed_close_session() {
     filename="$(basename $1)"
 
     childs="$(xwininfo -children -id $id | \
-        tail -n +7 | cut -d " " -f 6)"
+        tail -n +7 | awk -v FS="\"" '{print $1";"$4}' | \
+        sed 's/^     //g;s/  / /g;s/ ;/;/g' | grep -v "^;$")"
     for child in $childs; do
-        uri="$(xprop -id $child | grep "_URI(STRING)" | \
+        atom="$(echo WI_${child##*;}_ATOM)"
+        uri="$(xprop -id ${child%%;*} | grep "$($atom)" | \
             sed 's/^.* = //
                  s/\"//g')"
-        xkill -id $child
+        xkill -id ${child%%;*}
         if [ -n "$uri" ]; then
             echo $dir/$filename
             echo "$uri" >> \
