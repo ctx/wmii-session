@@ -14,14 +14,13 @@ Restore a session on a new wmii tag.
 
 (tested with)
 
-wmii, gvim, tabbed, surf, urxvt
-
-Chromium (uses ~200MB for every session)
+wmii, gvim, tabbed, surf, urxvt, zathura
 
 task (taskwarrior.org), surfraw
 
-vimprobable2, zathura with patches
+Chromium (uses ~200MB for every session)
 
+patched vimprobable2
 
 ------------------------------------------------------------------------------
 ## INSTALLATION
