@@ -9,9 +9,10 @@ WI_TEMPFOLDER="$(wmiir namespace)"
 
 # Set your default browser
 #BROWSER="wmii-chromium"
+BROWSER=wmii-luakit
 # Tabbed:'function'        'executable'  'container name'
 #BROWSER="wi_tabbed_open_tab vimprobable2 browser"
-BROWSER="wi_tabbed_open_tab surf browser"
+#BROWSER="wi_tabbed_open_tab surf browser"
 
 # Set your default pdf reader
 PDFREADER="wi_tabbed_open_tab zathura pdfreader"
@@ -187,6 +188,51 @@ wi_vim_close_session() {
 
 # }}} 
 
+# luakit           {{{
+
+# open a luakit session
+# arg1: session file (the file/the folder)
+# arg2: temporary session dir (place for temporary data)
+wi_luakit_open_session() {
+    session="$1"
+    dir="$2/luakit"
+    cp -R "$session" "$dir" || mkdir -p "$dir"
+    export XDG_DATA_HOME="$dir"
+    luakit -U -n -u "luakit://history" &
+}
+
+wi_luakit_start() {
+    dir="$WI_TEMPFOLDER/$(wi_seltag)/luakit"
+    if ! [ -d "$dir" ]
+    then
+        mkdir -p "$dir"
+        export XDG_DATA_HOME="$dir" 
+        luakit -U -n -v -u "http://google.com" > /dev/null 2>&1 &
+    else
+        xdotool windowactivate "$(wmiir cat /tag/sel/index | grep luakit | cut -f2 -d\ )"
+    fi
+
+}
+
+# close luakit session
+# arg1: temporary session dir (src)
+# arg2: place to store the session (dest)
+wi_luakit_close_session() {
+    source="$1/luakit"
+    if ! [ -d "$source" ];then
+        return 1
+    fi
+    destination="$2"
+
+    luakits=$(wmiir cat /tag/sel/index | grep luakit | cut -f2 -d\ )
+    for luakit in $luakits ; do
+        wmiir xwrite /client/$luakit/ctl kill
+    done
+    sleep 1
+    mv "$source" "$destination"
+}
+# }}}
+
 # chromium         {{{
 
 # open a chromium session
@@ -253,7 +299,6 @@ wi_tabbed_open_tab() {
 
     cid=$(printf "%d\n" $cid)
     echo $cid > $idfile
-    echo $atom >> $idfile
 
     ${cmd} -e "$cid" "$url" 2>/dev/null &
     return 0

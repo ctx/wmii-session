@@ -1,0 +1,15 @@
+#!/bin/sh
+
+
+dir="$(wmiir namespace)/$(wmiir cat /tag/sel/ctl | sed '1q')/luakit"
+
+if ! [ -d "$dir" ]
+then
+        mkdir -p "$dir"
+        export XDG_DATA_HOME="$dir" 
+        luakit -U -n -v -u "luakit://history" > /dev/null 2>&1 &
+else
+        xdotool windowactivate "$(wmiir cat /tag/sel/index | grep luakit | cut -f2 -d\ )"
+fi
+
+
