@@ -201,15 +201,27 @@ wi_luakit_open_session() {
     luakit -U -n -u "luakit://history" &
 }
 
+wi_luakit_new_instance() {
+    mkdir -p "$1"
+    export XDG_DATA_HOME="$1" 
+    luakit -U -n -v -u "http://google.com" > /dev/null 2>&1 &
+}
+wi_luakit_focus() {
+        xdotool windowactivate $1
+}
+
 wi_luakit_start() {
     dir="$WI_TEMPFOLDER/$(wi_seltag)/luakit"
     if ! [ -d "$dir" ]
     then
-        mkdir -p "$dir"
-        export XDG_DATA_HOME="$dir" 
-        luakit -U -n -v -u "http://google.com" > /dev/null 2>&1 &
+        wi_luakit_new_instance $dir
     else
-        xdotool windowactivate "$(wmiir cat /tag/sel/index | grep luakit | cut -f2 -d\ )"
+        winid="$(wmiir cat /tag/sel/index | grep luakit | cut -f2 -d\ )"
+        if [ -z "$winid" ] ; then
+            wi_luakit_new_instance $dir
+        else
+            wi_luakit_focus $winid
+        fi
     fi
 
 }
