@@ -12,15 +12,17 @@ Restore a session on a new wmii tag.
 ## DEPENDENCIES 
 ------------------------------------------------------------------------------
 
-(tested with)
+Needed: wmii, xdotool (only for luakit)
 
-wmii, gvim, tabbed, surf, urxvt, zathura
+Editor: gvim
 
-task (taskwarrior.org), surfraw
+Helper: task (taskwarrior.org), surfraw, tabbed
 
-Chromium (uses ~200MB for every session)
+Browser: luakit, patched vimprobable2, surf
+         Chromium (uses ~200MB for every session)
 
-patched vimprobable2
+PDF: zathura
+
 
 ------------------------------------------------------------------------------
 ## INSTALLATION
@@ -36,7 +38,7 @@ patched vimprobable2
 ## CONFIGURATION
 ------------------------------------------------------------------------------
 
-* On top of session.sh you can set some variables.
+* Configuration variables ar at the beginning of the file session.sh.
 
 * Add the following to your shell rc. This makes it possible to save vim
   sessions and the shell history:

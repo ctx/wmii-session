@@ -1,6 +1,0 @@
-#!/bin/sh
-
-source $HOME/.wmii-hg/session.sh
-
-wi_luakit_start
-

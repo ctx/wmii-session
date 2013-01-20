@@ -9,7 +9,7 @@ WI_TEMPFOLDER="$(wmiir namespace)"
 
 # Set your default browser
 #BROWSER="wmii-chromium"
-BROWSER=wmii-luakit
+BROWSER=wi_luakit_start
 # Tabbed:'function'        'executable'  'container name'
 #BROWSER="wi_tabbed_open_tab vimprobable2 browser"
 #BROWSER="wi_tabbed_open_tab surf browser"
@@ -34,7 +34,7 @@ WI_surf_ATOM () {
 # wi_$APP_open_session 
 # wi_$APP_close_sessions
 #WI_APPLICATIONS='vim chromium'
-WI_APPLICATIONS='vim'
+WI_APPLICATIONS='vim luakit'
 
 # Surfraw files
 WI_BOOKMARKS="$HOME/.config/surfraw/bookmarks"
@@ -204,23 +204,33 @@ wi_luakit_open_session() {
 wi_luakit_new_instance() {
     mkdir -p "$1"
     export XDG_DATA_HOME="$1" 
-    luakit -U -n -v -u "http://google.com" > /dev/null 2>&1 &
+    luakit -U -n -v -u "$2" > /dev/null 2>&1 &
 }
 wi_luakit_focus() {
-        xdotool windowactivate $1
+    xdotool windowactivate $1
+    if [ -n "$2" ] ; then 
+        xdotool key t
+        xdotool type "$2"
+        xdotool key KP_Enter
+    fi
 }
 
 wi_luakit_start() {
+    if [ -z "$1" ] ; then
+        url="http://google.com"
+    else
+        url="$1"
+    fi
     dir="$WI_TEMPFOLDER/$(wi_seltag)/luakit"
     if ! [ -d "$dir" ]
     then
-        wi_luakit_new_instance $dir
+        wi_luakit_new_instance $dir $url
     else
-        winid="$(wmiir cat /tag/sel/index | grep luakit | cut -f2 -d\ )"
+        winid="$(wmiir cat /tag/sel/index | grep "luakit:" | cut -f2 -d\ )"
         if [ -z "$winid" ] ; then
-            wi_luakit_new_instance $dir
+            wi_luakit_new_instance $dir $url
         else
-            wi_luakit_focus $winid
+            wi_luakit_focus $winid $url
         fi
     fi
 
